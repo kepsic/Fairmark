@@ -6,7 +6,7 @@
 
 ### Unit Tests: ✅ 23/23 PASSED (100%)
 - ContributionTable: 4 tests
-- ProgressBar: 2 tests  
+- ProgressBar: 2 tests
 - GroupContext: 14 tests
 - FairnessBadge: 3 tests
 
@@ -114,7 +114,7 @@ npx playwright test basic-functionality.spec.ts  # Run specific test
 - **Test suites**: 4
 - **Total tests**: 23
 
-### E2E Tests  
+### E2E Tests
 - **Execution time**: 18.1s
 - **Average per test**: ~730ms
 - **Page load**: < 1s average

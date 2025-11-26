@@ -137,7 +137,7 @@ Based on findings, you can:
 
 ### Scenario 1: One Student Doing Everything
 **Signs**: One member >60%, others <15% each
-**Action**: 
+**Action**:
 - Meet with the team immediately
 - Discuss work distribution
 - Set clear expectations for remaining work

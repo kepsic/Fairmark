@@ -2,7 +2,7 @@
 
 ## 👥 4 Users
 - Alice Johnson
-- Bob Smith  
+- Bob Smith
 - Charlie Davis
 - Diana Martinez
 
@@ -18,7 +18,7 @@ Bob:     ████                              8.3% (8h, 5t)
 Charlie: ███                               5.0% (6h, 3t)
 ```
 
-### Project 2: Mobile Fitness App 🟡 SLIGHTLY UNBALANCED  
+### Project 2: Mobile Fitness App 🟡 SLIGHTLY UNBALANCED
 ```
 Tasks: 40/40 (100%)
 Team: 4 members
@@ -51,16 +51,16 @@ Bob:     █████████      28.1% (18h, 10t)
 ## 🎯 Demo Scenarios
 
 ### Scenario 1: Identify Free Riders
-**Project:** E-Commerce Platform  
-**Issue:** Alice doing 66.7% of work, others contributing <10% each  
+**Project:** E-Commerce Platform
+**Issue:** Alice doing 66.7% of work, others contributing <10% each
 **Action:** Team discussion needed about workload distribution
 
 ### Scenario 2: Prevent Burnout
-**Project:** Mobile Fitness App  
-**Issue:** Alice & Diana doing 68% of work combined (top 2 >80%)  
+**Project:** Mobile Fitness App
+**Issue:** Alice & Diana doing 68% of work combined (top 2 >80%)
 **Action:** Consider redistributing tasks to Bob & Charlie
 
 ### Scenario 3: Ideal Team
-**Project:** AI Chatbot System  
-**Issue:** None - balanced distribution (38%, 33%, 28%)  
+**Project:** AI Chatbot System
+**Issue:** None - balanced distribution (38%, 33%, 28%)
 **Action:** This is the goal! All members contributing fairly

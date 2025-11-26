@@ -89,7 +89,7 @@ After deployment, you'll have access to:
 ## Current Status
 
 ✅ Configuration files created
-✅ Changes committed to main branch  
+✅ Changes committed to main branch
 ✅ Changes pushed to GitHub
 ⏳ **Next: Connect repository in Vercel Dashboard**
 

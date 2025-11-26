@@ -36,25 +36,25 @@ describe('GroupContext', () => {
 
   test('should initialize with empty groups', () => {
     const { result } = renderHook(() => useGroups(), { wrapper })
-    
+
     expect(result.current.groups).toEqual([])
     expect(result.current.currentUserName).toBeNull()
   })
 
   test('should set current user name', () => {
     const { result } = renderHook(() => useGroups(), { wrapper })
-    
+
     act(() => {
       result.current.setCurrentUserName('John')
     })
-    
+
     expect(result.current.currentUserName).toBe('John')
     expect(localStorage.getItem('currentUserName')).toBe('John')
   })
 
   test('should create a new group', () => {
     const { result } = renderHook(() => useGroups(), { wrapper })
-    
+
     act(() => {
       result.current.setCurrentUserName('Alice')
     })
@@ -63,7 +63,7 @@ describe('GroupContext', () => {
     act(() => {
       groupId = result.current.createGroup('Test Project', 'Test description')
     })
-    
+
     expect(result.current.groups).toHaveLength(1)
     expect(result.current.groups[0].name).toBe('Test Project')
     expect(result.current.groups[0].description).toBe('Test description')
@@ -75,7 +75,7 @@ describe('GroupContext', () => {
 
   test('should get a group by id', () => {
     const { result } = renderHook(() => useGroups(), { wrapper })
-    
+
     act(() => {
       result.current.setCurrentUserName('Bob')
     })
@@ -84,16 +84,16 @@ describe('GroupContext', () => {
     act(() => {
       groupId = result.current.createGroup('Project X')
     })
-    
+
     const group = result.current.getGroup(groupId)
-    
+
     expect(group).toBeDefined()
     expect(group?.name).toBe('Project X')
   })
 
   test('should join an existing group', () => {
     const { result } = renderHook(() => useGroups(), { wrapper })
-    
+
     act(() => {
       result.current.setCurrentUserName('Charlie')
     })
@@ -106,7 +106,7 @@ describe('GroupContext', () => {
     act(() => {
       result.current.joinGroup(groupId, 'David')
     })
-    
+
     const group = result.current.getGroup(groupId)
     expect(group?.members).toHaveLength(2)
     expect(group?.members[1].name).toBe('David')
@@ -114,7 +114,7 @@ describe('GroupContext', () => {
 
   test('should not duplicate member when joining same group', () => {
     const { result } = renderHook(() => useGroups(), { wrapper })
-    
+
     act(() => {
       result.current.setCurrentUserName('Eve')
     })
@@ -127,14 +127,14 @@ describe('GroupContext', () => {
     act(() => {
       result.current.joinGroup(groupId, 'Eve')
     })
-    
+
     const group = result.current.getGroup(groupId)
     expect(group?.members).toHaveLength(1)
   })
 
   test('should add a member to group', () => {
     const { result } = renderHook(() => useGroups(), { wrapper })
-    
+
     act(() => {
       result.current.setCurrentUserName('Frank')
     })
@@ -147,7 +147,7 @@ describe('GroupContext', () => {
     act(() => {
       result.current.addMember(groupId, 'Grace')
     })
-    
+
     const group = result.current.getGroup(groupId)
     expect(group?.members).toHaveLength(2)
     expect(group?.members[1].name).toBe('Grace')
@@ -155,7 +155,7 @@ describe('GroupContext', () => {
 
   test('should update member contribution', () => {
     const { result } = renderHook(() => useGroups(), { wrapper })
-    
+
     act(() => {
       result.current.setCurrentUserName('Henry')
     })
@@ -171,7 +171,7 @@ describe('GroupContext', () => {
     act(() => {
       result.current.updateMemberContribution(groupId, memberId, 5, 3)
     })
-    
+
     const updatedGroup = result.current.getGroup(groupId)
     expect(updatedGroup?.members[0].hours).toBe(5)
     expect(updatedGroup?.members[0].tasks).toBe(3)
@@ -179,7 +179,7 @@ describe('GroupContext', () => {
 
   test('should accumulate member contributions', () => {
     const { result } = renderHook(() => useGroups(), { wrapper })
-    
+
     act(() => {
       result.current.setCurrentUserName('Iris')
     })
@@ -199,7 +199,7 @@ describe('GroupContext', () => {
     act(() => {
       result.current.updateMemberContribution(groupId, memberId, 2, 1)
     })
-    
+
     const updatedGroup = result.current.getGroup(groupId)
     expect(updatedGroup?.members[0].hours).toBe(5)
     expect(updatedGroup?.members[0].tasks).toBe(3)
@@ -207,7 +207,7 @@ describe('GroupContext', () => {
 
   test('should update group settings', () => {
     const { result } = renderHook(() => useGroups(), { wrapper })
-    
+
     act(() => {
       result.current.setCurrentUserName('Jack')
     })
@@ -225,7 +225,7 @@ describe('GroupContext', () => {
         25
       )
     })
-    
+
     const group = result.current.getGroup(groupId)
     expect(group?.name).toBe('Updated Project Name')
     expect(group?.description).toBe('Updated description')

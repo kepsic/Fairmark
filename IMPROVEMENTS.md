@@ -9,7 +9,7 @@ Systematic analysis and improvements implemented to enhance the Fairmark applica
 **Problem:** Using `redirect()` inside `useEffect` causes hydration mismatch and flash of unstyled content.
 
 **Solution:**
-- Replaced `redirect()` with `router.replace()` 
+- Replaced `redirect()` with `router.replace()`
 - Added loading state to prevent flash
 - Implemented `LoadingSpinner` component with proper ARIA attributes
 

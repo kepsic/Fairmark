@@ -47,7 +47,7 @@ A Next.js 14 prototype application for tracking university group project contrib
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - npm or yarn
 
 ### Installation & Running
@@ -87,7 +87,7 @@ Visit [http://localhost:3000](http://localhost:3000) to see the app.
 
 On the login page, click **"Load Demo (3 Projects, 4 Users)"** to instantly explore the POC with realistic data demonstrating:
 - ✅ **Balanced team** (AI Chatbot System)
-- ⚡ **Slightly unbalanced team** (Mobile Fitness App)  
+- ⚡ **Slightly unbalanced team** (Mobile Fitness App)
 - ⚠️ **Unbalanced team** (E-Commerce Platform)
 
 See [DEMO.md](./DEMO.md) for detailed demo data overview.

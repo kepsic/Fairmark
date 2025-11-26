@@ -25,6 +25,9 @@ yarn-error.log*
 # Local env files
 .env*.local
 
+# Firebase
+*firebase*adminsdk*.json
+
 # VS Code
 .vscode/*
 !.vscode/settings.json
