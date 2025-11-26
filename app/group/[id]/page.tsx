@@ -27,18 +27,18 @@ export default function GroupDashboard({ params }: { params: { id: string } }) {
 
   if (!group) {
     return (
-      <div className="min-h-screen p-4">
+      <div className="p-4">
         <div className="max-w-xl mx-auto">
-          <div className="rounded-lg border p-8 shadow-sm bg-white text-center">
-            <h1 className="text-xl font-bold mb-2">Group Not Found</h1>
-            <p className="text-gray-600 mb-4">
-              The group you&apos;re looking for doesn&apos;t exist.
+          <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-8 mb-4 text-center">
+            <h1 className="text-xl font-bold mb-2 text-[#003A79]">Project Not Found</h1>
+            <p className="text-[#333333] mb-4">
+              The project you are looking for does not exist.
             </p>
             <Link
               href="/groups"
-              className="inline-block bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700"
+              className="inline-block bg-[#D4A017] text-white font-semibold px-6 py-3 rounded-md hover:bg-[#b58912] transition"
             >
-              Back to Groups
+              Back to Projects
             </Link>
           </div>
         </div>
@@ -49,28 +49,28 @@ export default function GroupDashboard({ params }: { params: { id: string } }) {
   const totalLoggedTasks = group.members.reduce((sum, m) => sum + m.tasks, 0)
 
   return (
-    <div className="min-h-screen p-4 pb-20">
-      <div className="max-w-xl mx-auto">
+    <div className="p-4 pb-20">
+      <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-6">
-          <Link href="/groups" className="text-blue-600 hover:underline text-sm">
-            ← Back to groups
+          <Link href="/groups" className="text-[#005BB5] hover:underline text-sm">
+            ← Back to projects
           </Link>
         </div>
 
         {/* Greeting */}
         <div className="mb-6">
-          <h1 className="text-2xl font-bold mb-1">
-            Hi {currentUserName}, welcome to {group.name}
+          <h1 className="text-2xl font-bold mb-1 text-[#003A79]">
+            {group.name}
           </h1>
           {group.description && (
-            <p className="text-gray-600">{group.description}</p>
+            <p className="text-[#333333]">{group.description}</p>
           )}
         </div>
 
         {/* Progress Section */}
-        <div className="rounded-lg border p-6 shadow-sm bg-white mb-6">
-          <h2 className="text-lg font-semibold mb-4">Overall Progress</h2>
+        <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-6 mb-4">
+          <h2 className="text-lg font-semibold mb-4 text-[#003A79]">Overall Progress</h2>
           <ProgressBar
             current={totalLoggedTasks}
             total={group.totalTasksNeeded}
@@ -83,28 +83,28 @@ export default function GroupDashboard({ params }: { params: { id: string } }) {
         </div>
 
         {/* Task Table */}
-        <div className="rounded-lg border shadow-sm bg-white mb-6 overflow-hidden">
+        <div className="bg-white border border-gray-200 shadow-sm rounded-lg mb-4 overflow-hidden">
           <div className="p-4 border-b flex items-center justify-between flex-wrap gap-2">
-            <h2 className="text-lg font-semibold">Project Tasks</h2>
+            <h2 className="text-lg font-semibold text-[#003A79]">Project Tasks</h2>
             <div className="flex gap-2">
               <button
                 onClick={() => {
                   const assigned = autoAssignTasks(params.id)
                   if (assigned > 0) {
-                    alert(`Auto-assigned ${assigned} unassigned task(s) to team members!`)
+                    alert(`Auto-assigned ${assigned} unassigned tasks to team members.`)
                   } else {
                     alert('No unassigned tasks to distribute.')
                   }
                 }}
-                className="text-sm bg-purple-600 text-white rounded-lg px-3 py-1 hover:bg-purple-700 transition-colors"
+                className="text-sm bg-[#003A79] text-white font-semibold rounded-md px-3 py-1 hover:bg-[#002d5c] transition"
               >
-                ⚡ Auto-Assign
+                Auto-Assign
               </button>
               <Link
                 href={`/group/${params.id}/tasks/new`}
-                className="text-sm bg-blue-600 text-white rounded-lg px-3 py-1 hover:bg-blue-700 transition-colors"
+                className="text-sm bg-[#D4A017] text-white font-semibold rounded-md px-3 py-1 hover:bg-[#b58912] transition"
               >
-                + New Task
+                New Task
               </Link>
             </div>
           </div>
@@ -112,9 +112,9 @@ export default function GroupDashboard({ params }: { params: { id: string } }) {
         </div>
 
         {/* Contribution Graph */}
-        <div className="rounded-lg border shadow-sm bg-white mb-6 overflow-hidden">
+        <div className="bg-white border border-gray-200 shadow-sm rounded-lg mb-4 overflow-hidden">
           <div className="p-4 border-b">
-            <h2 className="text-lg font-semibold">Contribution Distribution</h2>
+            <h2 className="text-lg font-semibold text-[#003A79]">Contribution Distribution</h2>
           </div>
           <div className="p-4">
             <ContributionGraph members={group.members} tasks={group.tasks} />
@@ -122,9 +122,9 @@ export default function GroupDashboard({ params }: { params: { id: string } }) {
         </div>
 
         {/* Contribution Table */}
-        <div className="rounded-lg border shadow-sm bg-white mb-6 overflow-hidden">
+        <div className="bg-white border border-gray-200 shadow-sm rounded-lg mb-4 overflow-hidden">
           <div className="p-4 border-b">
-            <h2 className="text-lg font-semibold">Team Contributions</h2>
+            <h2 className="text-lg font-semibold text-[#003A79]">Team Contributions</h2>
           </div>
           <ContributionTable members={group.members} tasks={group.tasks} />
         </div>
@@ -133,36 +133,36 @@ export default function GroupDashboard({ params }: { params: { id: string } }) {
         <div className="space-y-3">
           <Link
             href={`/group/${params.id}/contribute`}
-            className="block w-full bg-blue-600 text-white rounded-lg px-4 py-3 text-center font-medium hover:bg-blue-700 transition-colors"
+            className="block w-full bg-[#D4A017] text-white font-semibold px-6 py-3 rounded-md hover:bg-[#b58912] transition text-center"
           >
             Add Work
           </Link>
 
           <Link
             href={`/group/${params.id}/add-member`}
-            className="block w-full bg-white border-2 border-blue-600 text-blue-600 rounded-lg px-4 py-3 text-center font-medium hover:bg-blue-50 transition-colors"
+            className="block w-full border border-[#003A79] text-[#003A79] px-5 py-2 rounded-md hover:bg-[#003A79] hover:text-white transition text-center font-semibold"
           >
             Add Member
           </Link>
 
           <Link
             href={`/group/${params.id}/settings`}
-            className="block w-full bg-gray-200 text-gray-700 rounded-lg px-4 py-3 text-center font-medium hover:bg-gray-300 transition-colors"
+            className="block w-full bg-gray-200 text-gray-700 rounded-md px-4 py-3 text-center font-medium hover:bg-gray-300 transition"
           >
             Project Settings
           </Link>
         </div>
 
         {/* Group ID for sharing */}
-        <div className="mt-6 rounded-lg border p-4 shadow-sm bg-gray-50">
-          <p className="text-sm font-medium text-gray-700 mb-2">Share this Group ID:</p>
+        <div className="mt-6 bg-white border border-gray-200 shadow-sm rounded-lg p-4 mb-4">
+          <p className="text-sm font-medium text-[#333333] mb-2">Share this Project ID:</p>
           <div className="flex items-center gap-2">
             <code className="flex-1 bg-white px-3 py-2 rounded border text-xs break-all">
               {group.id}
             </code>
             <button
               onClick={() => navigator.clipboard.writeText(group.id)}
-              className="bg-blue-600 text-white px-3 py-2 rounded text-sm hover:bg-blue-700 transition-colors whitespace-nowrap"
+              className="bg-[#005BB5] text-white px-3 py-2 rounded text-sm hover:bg-[#004a99] transition whitespace-nowrap"
             >
               Copy
             </button>

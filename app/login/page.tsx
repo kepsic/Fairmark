@@ -31,12 +31,12 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="flex items-center justify-center p-4">
       <div className="max-w-xl mx-auto w-full">
-        <div className="rounded-lg border p-8 shadow-sm bg-white">
-          <h1 className="text-3xl font-bold mb-2 text-center">Welcome to Fairmark</h1>
-          <p className="text-gray-600 mb-6 text-center">
-            Track contributions and ensure fairness in group projects
+        <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-8 mb-4">
+          <h1 className="text-3xl font-bold mb-2 text-center text-[#003A79]">Fairmark</h1>
+          <p className="text-[#333333] mb-6 text-center">
+            Track contributions and ensure fairness in group projects.
           </p>
           
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -52,8 +52,8 @@ export default function LoginPage() {
                   setFirstName(e.target.value)
                   setError('')
                 }}
-                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
-                  error ? 'border-red-500 focus:ring-red-500' : 'focus:ring-blue-500'
+                className={`w-full px-4 py-2 border rounded-md bg-[#F5F5F5] focus:outline-none focus:ring-2 ${
+                  error ? 'border-red-500 focus:ring-red-500' : 'border-[#003A79] focus:ring-[#003A79]'
                 }`}
                 placeholder="Enter your first name"
                 required
@@ -72,22 +72,22 @@ export default function LoginPage() {
             
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white rounded-lg px-4 py-3 font-medium hover:bg-blue-700 transition-colors"
+              className="w-full bg-[#D4A017] text-white font-semibold px-6 py-3 rounded-md hover:bg-[#b58912] transition"
             >
               Continue
             </button>
           </form>
 
           <div className="mt-6 pt-6 border-t">
-            <p className="text-sm text-gray-600 mb-3 text-center">
-              Or explore with demo data
+            <p className="text-sm text-[#333333] mb-3 text-center">
+              Or explore with demo data.
             </p>
             <button
               onClick={handleLoadDemo}
               type="button"
-              className="w-full bg-green-600 text-white rounded-lg px-4 py-3 font-medium hover:bg-green-700 transition-colors mb-3"
+              className="w-full bg-[#003A79] text-white font-semibold px-5 py-2 rounded-md hover:bg-[#002d5c] transition mb-3"
             >
-              🚀 Load Demo (3 Projects, 4 Users)
+              Load Demo Data
             </button>
             <button
               onClick={() => {
@@ -95,9 +95,9 @@ export default function LoginPage() {
                 router.push('/groups')
               }}
               type="button"
-              className="w-full bg-purple-600 text-white rounded-lg px-4 py-3 font-medium hover:bg-purple-700 transition-colors"
+              className="w-full border border-[#003A79] text-[#003A79] px-5 py-2 rounded-md hover:bg-[#003A79] hover:text-white transition"
             >
-              📥 Load Data From Canvas (Mock)
+              Load Data From Canvas
             </button>
             <p className="text-xs text-gray-500 mt-2 text-center">
               Canvas demo shows SaaS Platform MVP with unbalanced workload (Alice 57%)

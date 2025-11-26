@@ -21,38 +21,38 @@ export default function GroupsPage() {
   }
 
   return (
-    <div className="min-h-screen p-4">
-      <div className="max-w-xl mx-auto">
+    <div className="p-4">
+      <div className="max-w-4xl mx-auto">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold mb-1">Hi {currentUserName}!</h1>
-          <p className="text-gray-600">Manage your group projects</p>
+          <h1 className="text-2xl font-bold mb-1 text-[#003A79]">Hi {currentUserName}</h1>
+          <p className="text-[#333333]">Manage your group projects.</p>
         </div>
 
         <div className="space-y-4 mb-6">
           <Link
             href="/groups/new"
-            className="block w-full bg-blue-600 text-white rounded-lg px-4 py-3 text-center font-medium hover:bg-blue-700 transition-colors"
+            className="block w-full bg-[#D4A017] text-white font-semibold px-6 py-3 rounded-md hover:bg-[#b58912] transition text-center"
           >
-            Create New Group
+            Create New Project
           </Link>
           
           <Link
             href="/groups/join"
-            className="block w-full bg-white border-2 border-blue-600 text-blue-600 rounded-lg px-4 py-3 text-center font-medium hover:bg-blue-50 transition-colors"
+            className="block w-full border border-[#003A79] text-[#003A79] px-5 py-2 rounded-md hover:bg-[#003A79] hover:text-white transition text-center font-semibold"
           >
-            Join Existing Group
+            Join Existing Project
           </Link>
         </div>
 
         <div>
-          <h2 className="text-xl font-semibold mb-4">Your Groups</h2>
+          <h2 className="text-xl font-semibold mb-4 text-[#003A79]">Your Projects</h2>
           {groups.length === 0 ? (
-            <div className="rounded-lg border p-8 shadow-sm bg-white text-center">
-              <p className="text-gray-500 mb-4">
-                You haven&apos;t joined any groups yet.
+            <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-8 mb-4 text-center">
+              <p className="text-[#333333] mb-4">
+                You have not joined any projects yet.
               </p>
-              <p className="text-sm text-gray-400">
-                Create a new group or join an existing one to get started!
+              <p className="text-sm text-gray-600">
+                Create a new project or join an existing one to get started.
               </p>
             </div>
           ) : (

@@ -1,0 +1,27 @@
+# Dependencies
+node_modules
+
+# Testing
+__tests__
+*.test.tsx
+*.test.ts
+*.spec.ts
+*.spec.tsx
+test-results
+playwright-report
+e2e
+
+# Documentation
+*.md
+!README.md
+
+# Local env files
+.env*.local
+
+# IDE
+.vscode
+.idea
+
+# Git
+.git
+.gitignore

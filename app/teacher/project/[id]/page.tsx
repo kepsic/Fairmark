@@ -27,13 +27,13 @@ export default function TeacherProjectDetailPage({ params }: { params: { id: str
 
   if (!group) {
     return (
-      <div className="min-h-screen p-4">
+      <div className="p-4">
         <div className="max-w-4xl mx-auto">
-          <div className="rounded-lg border p-8 shadow-sm bg-white text-center">
-            <h1 className="text-xl font-bold mb-2">Project Not Found</h1>
+          <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-8 mb-4 text-center">
+            <h1 className="text-xl font-bold mb-2 text-[#003A79]">Project Not Found</h1>
             <Link
               href="/teacher/projects"
-              className="inline-block bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700"
+              className="inline-block bg-[#D4A017] text-white font-semibold px-6 py-3 rounded-md hover:bg-[#b58912] transition"
             >
               Back to Projects
             </Link>
@@ -52,39 +52,38 @@ export default function TeacherProjectDetailPage({ params }: { params: { id: str
   const underworkedMembers = membersWithStats.filter(m => m.percentage < 10 && totalEffort > 0)
 
   return (
-    <div className="min-h-screen p-4">
+    <div className="p-4">
       <div className="max-w-4xl mx-auto">
         <div className="mb-6">
-          <Link href="/teacher/projects" className="text-blue-600 hover:underline text-sm">
+          <Link href="/teacher/projects" className="text-[#005BB5] hover:underline text-sm">
             ← Back to all projects
           </Link>
         </div>
 
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-3xl font-bold mb-2">{group.name}</h1>
+          <h1 className="text-3xl font-bold mb-2 text-[#003A79]">{group.name}</h1>
           {group.description && (
-            <p className="text-gray-600">{group.description}</p>
+            <p className="text-[#333333]">{group.description}</p>
           )}
-          <p className="text-sm text-gray-500 mt-2">
+          <p className="text-sm text-gray-600 mt-2">
             Project Lead: <span className="font-medium">{group.projectLead || 'N/A'}</span>
           </p>
         </div>
 
         {/* Fairness Alert */}
         {fairnessStatus !== 'balanced' && (
-          <div className={`rounded-lg border-2 p-4 mb-6 ${
+          <div className={`bg-white border-2 shadow-sm rounded-lg p-4 mb-4 ${
             fairnessStatus === 'unbalanced' 
-              ? 'bg-red-50 border-red-300' 
-              : 'bg-yellow-50 border-yellow-300'
+              ? 'border-red-600' 
+              : 'border-yellow-500'
           }`}>
             <div className="flex items-start gap-3">
-              <span className="text-2xl">⚠️</span>
               <div className="flex-1">
-                <h3 className="font-bold mb-2">
+                <h3 className="font-bold mb-2 text-[#003A79]">
                   {fairnessStatus === 'unbalanced' ? 'Fairness Warning' : 'Fairness Advisory'}
                 </h3>
-                <p className="text-sm mb-3">
+                <p className="text-sm mb-3 text-[#333333]">
                   {fairnessStatus === 'unbalanced' 
                     ? 'This project has a significantly unbalanced workload distribution.'
                     : 'This project shows signs of workload imbalance.'
@@ -126,15 +125,15 @@ export default function TeacherProjectDetailPage({ params }: { params: { id: str
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <div className="rounded-lg border p-4 shadow-sm bg-white">
+          <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-4 mb-4">
             <p className="text-sm text-gray-600 mb-1">Team Members</p>
-            <p className="text-2xl font-bold">{group.members.length}</p>
+            <p className="text-2xl font-bold text-[#003A79]">{group.members.length}</p>
           </div>
-          <div className="rounded-lg border p-4 shadow-sm bg-white">
+          <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-4 mb-4">
             <p className="text-sm text-gray-600 mb-1">Total Tasks</p>
-            <p className="text-2xl font-bold">{group.tasks.length}</p>
+            <p className="text-2xl font-bold text-[#003A79]">{group.tasks.length}</p>
           </div>
-          <div className="rounded-lg border p-4 shadow-sm bg-white">
+          <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-4 mb-4">
             <p className="text-sm text-gray-600 mb-1">Completion</p>
             <p className="text-2xl font-bold">
               {group.tasks.length > 0 
@@ -145,9 +144,9 @@ export default function TeacherProjectDetailPage({ params }: { params: { id: str
         </div>
 
         {/* Contribution Graph */}
-        <div className="rounded-lg border shadow-sm bg-white mb-6 overflow-hidden">
+        <div className="bg-white border border-gray-200 shadow-sm rounded-lg mb-4 overflow-hidden">
           <div className="p-4 border-b">
-            <h2 className="text-lg font-semibold">Contribution Distribution</h2>
+            <h2 className="text-lg font-semibold text-[#003A79]">Contribution Distribution</h2>
           </div>
           <div className="p-4">
             <ContributionGraph members={group.members} tasks={group.tasks} />
@@ -155,26 +154,26 @@ export default function TeacherProjectDetailPage({ params }: { params: { id: str
         </div>
 
         {/* Tasks */}
-        <div className="rounded-lg border shadow-sm bg-white mb-6 overflow-hidden">
+        <div className="bg-white border border-gray-200 shadow-sm rounded-lg mb-4 overflow-hidden">
           <div className="p-4 border-b">
-            <h2 className="text-lg font-semibold">Project Tasks</h2>
+            <h2 className="text-lg font-semibold text-[#003A79]">Project Tasks</h2>
           </div>
           <TaskTable tasks={group.tasks} groupId={params.id} members={group.members} />
         </div>
 
         {/* Contributions */}
-        <div className="rounded-lg border shadow-sm bg-white mb-6 overflow-hidden">
+        <div className="bg-white border border-gray-200 shadow-sm rounded-lg mb-4 overflow-hidden">
           <div className="p-4 border-b">
-            <h2 className="text-lg font-semibold">Member Contributions</h2>
+            <h2 className="text-lg font-semibold text-[#003A79]">Member Contributions</h2>
           </div>
           <ContributionTable members={group.members} tasks={group.tasks} />
         </div>
 
         {/* Grading Recommendations */}
-        <div className="rounded-lg border p-6 shadow-sm bg-blue-50 border-blue-200">
-          <h2 className="text-lg font-semibold mb-3">📊 Grading Recommendations</h2>
-          <p className="text-sm text-gray-700 mb-4">
-            Based on contribution percentages, consider individual grade adjustments:
+        <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-6 mb-4">
+          <h2 className="text-lg font-semibold mb-3 text-[#003A79]">Grading Recommendations</h2>
+          <p className="text-sm text-[#333333] mb-4">
+            Based on contribution percentages, consider individual grade adjustments.
           </p>
           <div className="space-y-2">
             {membersWithStats

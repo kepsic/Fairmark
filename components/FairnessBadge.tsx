@@ -11,19 +11,19 @@ function FairnessBadge({ members, tasks = [] }: FairnessBadgeProps) {
   const { fairnessStatus } = calculateTaskFairness(members, tasks)
 
   let message = 'Balanced'
-  let colorClass = 'bg-green-100 text-green-800 border-green-300'
+  let colorClass = 'bg-green-600 text-white'
 
   if (fairnessStatus === 'unbalanced') {
     message = 'Unbalanced'
-    colorClass = 'bg-red-100 text-red-800 border-red-300'
+    colorClass = 'bg-red-600 text-white'
   } else if (fairnessStatus === 'slightly-unbalanced') {
     message = 'Slightly Unbalanced'
-    colorClass = 'bg-yellow-100 text-yellow-800 border-yellow-300'
+    colorClass = 'bg-yellow-500 text-black'
   }
 
   return (
     <div
-      className={`inline-block px-4 py-2 rounded-lg border-2 font-semibold ${colorClass}`}
+      className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${colorClass}`}
       role="status"
       aria-label={`Team fairness status: ${message}`}
     >

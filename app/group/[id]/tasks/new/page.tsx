@@ -57,15 +57,15 @@ export default function NewTaskPage({ params }: { params: { id: string } }) {
 
   if (!group) {
     return (
-      <div className="min-h-screen p-4">
+      <div className="p-4">
         <div className="max-w-xl mx-auto">
-          <div className="rounded-lg border p-8 shadow-sm bg-white text-center">
-            <h1 className="text-xl font-bold mb-2">Group Not Found</h1>
+          <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-8 mb-4 text-center">
+            <h1 className="text-xl font-bold mb-2 text-[#003A79]">Project Not Found</h1>
             <Link
               href="/groups"
-              className="inline-block bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700"
+              className="inline-block bg-[#D4A017] text-white font-semibold px-6 py-3 rounded-md hover:bg-[#b58912] transition"
             >
-              Back to Groups
+              Back to Projects
             </Link>
           </div>
         </div>
@@ -74,17 +74,17 @@ export default function NewTaskPage({ params }: { params: { id: string } }) {
   }
 
   return (
-    <div className="min-h-screen p-4">
+    <div className="p-4">
       <div className="max-w-xl mx-auto">
         <div className="mb-6">
-          <Link href={`/group/${params.id}`} className="text-blue-600 hover:underline text-sm">
+          <Link href={`/group/${params.id}`} className="text-[#005BB5] hover:underline text-sm">
             ← Back to dashboard
           </Link>
         </div>
 
-        <div className="rounded-lg border p-6 shadow-sm bg-white">
-          <h1 className="text-2xl font-bold mb-2">Create New Task</h1>
-          <p className="text-gray-600 mb-6">{group.name}</p>
+        <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-6 mb-4">
+          <h1 className="text-2xl font-bold mb-2 text-[#003A79]">Create New Task</h1>
+          <p className="text-[#333333] mb-6">{group.name}</p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -99,10 +99,10 @@ export default function NewTaskPage({ params }: { params: { id: string } }) {
                   setTitle(e.target.value)
                   setErrors((prev) => ({ ...prev, title: undefined }))
                 }}
-                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
-                  errors.title ? 'border-red-500 focus:ring-red-500' : 'focus:ring-blue-500'
+                className={`w-full px-4 py-2 border rounded-md bg-[#F5F5F5] focus:outline-none focus:ring-2 ${
+                  errors.title ? 'border-red-500 focus:ring-red-500' : 'border-[#003A79] focus:ring-[#003A79]'
                 }`}
-                placeholder="e.g., Design user interface"
+                placeholder="Design user interface"
                 required
                 autoFocus
                 maxLength={100}
@@ -127,10 +127,10 @@ export default function NewTaskPage({ params }: { params: { id: string } }) {
                   setDescription(e.target.value)
                   setErrors((prev) => ({ ...prev, description: undefined }))
                 }}
-                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
-                  errors.description ? 'border-red-500 focus:ring-red-500' : 'focus:ring-blue-500'
+                className={`w-full px-4 py-2 border rounded-md bg-[#F5F5F5] focus:outline-none focus:ring-2 ${
+                  errors.description ? 'border-red-500 focus:ring-red-500' : 'border-[#003A79] focus:ring-[#003A79]'
                 }`}
-                placeholder="Task details and requirements..."
+                placeholder="Task details and requirements."
                 rows={4}
                 maxLength={500}
                 aria-invalid={!!errors.description}
@@ -155,8 +155,8 @@ export default function NewTaskPage({ params }: { params: { id: string } }) {
                   setHours(e.target.value)
                   setErrors((prev) => ({ ...prev, hours: undefined }))
                 }}
-                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
-                  errors.hours ? 'border-red-500 focus:ring-red-500' : 'focus:ring-blue-500'
+                className={`w-full px-4 py-2 border rounded-md bg-[#F5F5F5] focus:outline-none focus:ring-2 ${
+                  errors.hours ? 'border-red-500 focus:ring-red-500' : 'border-[#003A79] focus:ring-[#003A79]'
                 }`}
                 placeholder="0"
                 min="0"
@@ -176,13 +176,13 @@ export default function NewTaskPage({ params }: { params: { id: string } }) {
             <div className="flex gap-3 pt-2">
               <button
                 type="submit"
-                className="flex-1 bg-blue-600 text-white rounded-lg px-4 py-3 font-medium hover:bg-blue-700 transition-colors"
+                className="flex-1 bg-[#D4A017] text-white font-semibold px-6 py-3 rounded-md hover:bg-[#b58912] transition"
               >
                 Create Task
               </button>
               <Link
                 href={`/group/${params.id}`}
-                className="flex-1 bg-gray-200 text-gray-700 rounded-lg px-4 py-3 font-medium hover:bg-gray-300 transition-colors text-center"
+                className="flex-1 bg-gray-200 text-gray-700 rounded-md px-4 py-3 font-medium hover:bg-gray-300 transition text-center"
               >
                 Cancel
               </Link>

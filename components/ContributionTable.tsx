@@ -29,7 +29,7 @@ function ContributionTable({ members, tasks = [] }: ContributionTableProps) {
         <caption className="sr-only">
           Team member contributions showing hours worked, tasks completed, and contribution percentage
         </caption>
-        <thead className="text-xs uppercase bg-gray-100">
+        <thead className="text-xs uppercase bg-[#003A79] text-white">
           <tr>
             <th scope="col" className="px-4 py-3">Member</th>
             <th scope="col" className="px-4 py-3 text-right">Task Hours</th>
@@ -40,7 +40,7 @@ function ContributionTable({ members, tasks = [] }: ContributionTableProps) {
         </thead>
         <tbody>
           {membersWithPercentage.map((member) => (
-            <tr key={member.id} className="border-b hover:bg-gray-50">
+            <tr key={member.id} className="border-b border-gray-300 odd:bg-white even:bg-[#F5F5F5]">
               <th scope="row" className="px-4 py-3 font-medium">
                 {member.name}
                 {member.role === 'sherpa' && (
@@ -49,7 +49,7 @@ function ContributionTable({ members, tasks = [] }: ContributionTableProps) {
                   </span>
                 )}
               </th>
-              <td className="px-4 py-3 text-right text-blue-600 font-medium">{member.taskHours}h</td>
+              <td className="px-4 py-3 text-right text-[#005BB5] font-medium">{member.taskHours}h</td>
               <td className="px-4 py-3 text-right">{member.hours}h</td>
               <td className="px-4 py-3 text-right">{member.tasks}</td>
               <td className="px-4 py-3 text-right font-semibold" aria-label={`${member.name} contribution: ${member.percentage.toFixed(1)}%`}>

@@ -14,7 +14,7 @@ function GroupCard({ group }: GroupCardProps) {
 
   return (
     <Link href={`/group/${group.id}`}>
-      <div className="rounded-lg border p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer bg-white">
+      <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-6 mb-4 hover:shadow-md transition-shadow cursor-pointer">
         <h3 className="text-lg font-semibold mb-2">{group.name}</h3>
         {group.description && (
           <p className="text-sm text-gray-600 mb-3">{group.description}</p>
@@ -23,13 +23,13 @@ function GroupCard({ group }: GroupCardProps) {
           <span className="text-gray-600">
             {group.members.length} member{group.members.length !== 1 ? 's' : ''}
           </span>
-          <span className="text-blue-600 font-medium">
+          <span className="text-[#005BB5] font-medium">
             {Math.round(progress)}% complete
           </span>
         </div>
-        <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+        <div className="w-full bg-gray-300 rounded-full h-3 mt-2">
           <div
-            className="bg-blue-600 h-2 rounded-full transition-all"
+            className="bg-[#005BB5] h-3 rounded-full transition-all"
             style={{ width: `${progress}%` }}
           />
         </div>

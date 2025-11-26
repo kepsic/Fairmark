@@ -35,7 +35,7 @@ function TaskTable({ tasks, groupId, members }: TaskTableProps) {
         <caption className="sr-only">
           Project tasks with status, assigned member, and hours
         </caption>
-        <thead className="text-xs uppercase bg-gray-100">
+        <thead className="text-xs uppercase bg-[#003A79] text-white">
           <tr>
             <th scope="col" className="px-4 py-3">Task</th>
             <th scope="col" className="px-4 py-3">Status</th>
@@ -50,11 +50,11 @@ function TaskTable({ tasks, groupId, members }: TaskTableProps) {
               : null
 
             return (
-              <tr key={task.id} className="border-b hover:bg-gray-50">
+              <tr key={task.id} className="border-b border-gray-300 odd:bg-white even:bg-[#F5F5F5]">
                 <th scope="row" className="px-4 py-3">
                   <Link 
                     href={`/group/${groupId}/tasks/${task.id}`}
-                    className="font-medium text-blue-600 hover:underline"
+                    className="font-medium text-[#005BB5] hover:underline"
                   >
                     {task.title}
                   </Link>

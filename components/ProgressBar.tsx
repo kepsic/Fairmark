@@ -15,7 +15,7 @@ function ProgressBar({ current, total }: ProgressBarProps) {
         <span className="text-sm font-medium" aria-live="polite">{Math.round(percentage)}%</span>
       </div>
       <div
-        className="w-full bg-gray-200 rounded-full h-4 overflow-hidden"
+        className="w-full bg-gray-300 rounded-full h-3 overflow-hidden"
         role="progressbar"
         aria-valuenow={Math.round(percentage)}
         aria-valuemin={0}
@@ -24,7 +24,7 @@ function ProgressBar({ current, total }: ProgressBarProps) {
         aria-describedby="progress-description"
       >
         <div
-          className="bg-blue-600 h-4 rounded-full transition-all duration-300"
+          className="bg-[#005BB5] h-3 rounded-full transition-all duration-300"
           style={{ width: `${percentage}%` }}
         />
       </div>

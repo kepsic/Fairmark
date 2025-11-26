@@ -52,7 +52,7 @@ export default function ContributionGraph({ members, tasks }: ContributionGraphP
                     {member.percentage.toFixed(1)}%
                   </span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-6 overflow-hidden">
+                <div className="w-full bg-gray-300 rounded-full h-6 overflow-hidden">
                   <div
                     className={`${barColor} h-full rounded-full transition-all duration-500 ease-out flex items-center justify-end pr-2`}
                     style={{ width: `${barWidth}%` }}

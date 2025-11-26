@@ -51,16 +51,16 @@ export default function NewGroupPage() {
   }
 
   return (
-    <div className="min-h-screen p-4">
+    <div className="p-4">
       <div className="max-w-xl mx-auto">
         <div className="mb-6">
-          <Link href="/groups" className="text-blue-600 hover:underline text-sm">
-            ← Back to groups
+          <Link href="/groups" className="text-[#005BB5] hover:underline text-sm">
+            ← Back to projects
           </Link>
         </div>
 
-        <div className="rounded-lg border p-6 shadow-sm bg-white">
-          <h1 className="text-2xl font-bold mb-6">Create New Group</h1>
+        <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-6 mb-4">
+          <h1 className="text-2xl font-bold mb-6 text-[#003A79]">Create New Project</h1>
           
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -75,10 +75,10 @@ export default function NewGroupPage() {
                   setGroupName(e.target.value)
                   setErrors((prev) => ({ ...prev, name: undefined }))
                 }}
-                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
-                  errors.name ? 'border-red-500 focus:ring-red-500' : 'focus:ring-blue-500'
+                className={`w-full px-4 py-2 border rounded-md bg-[#F5F5F5] focus:outline-none focus:ring-2 ${
+                  errors.name ? 'border-red-500 focus:ring-red-500' : 'border-[#003A79] focus:ring-[#003A79]'
                 }`}
-                placeholder="e.g., Software Engineering Project"
+                placeholder="Software Engineering Project"
                 required
                 autoFocus
                 maxLength={100}
@@ -104,10 +104,10 @@ export default function NewGroupPage() {
                   setDescription(e.target.value)
                   setErrors((prev) => ({ ...prev, description: undefined }))
                 }}
-                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
-                  errors.description ? 'border-red-500 focus:ring-red-500' : 'focus:ring-blue-500'
+                className={`w-full px-4 py-2 border rounded-md bg-[#F5F5F5] focus:outline-none focus:ring-2 ${
+                  errors.description ? 'border-red-500 focus:ring-red-500' : 'border-[#003A79] focus:ring-[#003A79]'
                 }`}
-                placeholder="Brief description of the project..."
+                placeholder="Brief description of the project."
                 rows={3}
                 maxLength={500}
                 aria-invalid={!!errors.description}
@@ -123,21 +123,21 @@ export default function NewGroupPage() {
             <div className="flex gap-3 pt-2">
               <button
                 type="submit"
-                className="flex-1 bg-blue-600 text-white rounded-lg px-4 py-3 font-medium hover:bg-blue-700 transition-colors"
+                className="flex-1 bg-[#D4A017] text-white font-semibold px-6 py-3 rounded-md hover:bg-[#b58912] transition"
               >
-                Create Group
+                Create Project
               </button>
               <Link
                 href="/groups"
-                className="flex-1 bg-gray-200 text-gray-700 rounded-lg px-4 py-3 font-medium hover:bg-gray-300 transition-colors text-center"
+                className="flex-1 bg-gray-200 text-gray-700 rounded-md px-4 py-3 font-medium hover:bg-gray-300 transition text-center"
               >
                 Cancel
               </Link>
             </div>
           </form>
 
-          <p className="text-sm text-gray-500 mt-4">
-            You will be automatically added as the first member of this group.
+          <p className="text-sm text-gray-600 mt-4">
+            You will be automatically added as the first member of this project.
           </p>
         </div>
       </div>

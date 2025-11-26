@@ -33,15 +33,15 @@ export default function AddMemberPage({ params }: { params: { id: string } }) {
 
   if (!group) {
     return (
-      <div className="min-h-screen p-4">
+      <div className="p-4">
         <div className="max-w-xl mx-auto">
-          <div className="rounded-lg border p-8 shadow-sm bg-white text-center">
-            <h1 className="text-xl font-bold mb-2">Group Not Found</h1>
+          <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-8 mb-4 text-center">
+            <h1 className="text-xl font-bold mb-2 text-[#003A79]">Project Not Found</h1>
             <Link
               href="/groups"
-              className="inline-block bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700"
+              className="inline-block bg-[#D4A017] text-white font-semibold px-6 py-3 rounded-md hover:bg-[#b58912] transition"
             >
-              Back to Groups
+              Back to Projects
             </Link>
           </div>
         </div>
@@ -50,17 +50,17 @@ export default function AddMemberPage({ params }: { params: { id: string } }) {
   }
 
   return (
-    <div className="min-h-screen p-4">
+    <div className="p-4">
       <div className="max-w-xl mx-auto">
         <div className="mb-6">
-          <Link href={`/group/${params.id}`} className="text-blue-600 hover:underline text-sm">
+          <Link href={`/group/${params.id}`} className="text-[#005BB5] hover:underline text-sm">
             ← Back to dashboard
           </Link>
         </div>
 
-        <div className="rounded-lg border p-6 shadow-sm bg-white">
-          <h1 className="text-2xl font-bold mb-2">Add Team Member</h1>
-          <p className="text-gray-600 mb-6">{group.name}</p>
+        <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-6 mb-4">
+          <h1 className="text-2xl font-bold mb-2 text-[#003A79]">Add Team Member</h1>
+          <p className="text-[#333333] mb-6">{group.name}</p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -72,8 +72,8 @@ export default function AddMemberPage({ params }: { params: { id: string } }) {
                 id="memberName"
                 value={memberName}
                 onChange={(e) => setMemberName(e.target.value)}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter member's name"
+                className="w-full px-4 py-2 border border-[#003A79] rounded-md bg-[#F5F5F5] focus:outline-none focus:ring-2 focus:ring-[#003A79]"
+                placeholder="Enter member name"
                 required
                 autoFocus
               />
@@ -82,13 +82,13 @@ export default function AddMemberPage({ params }: { params: { id: string } }) {
             <div className="flex gap-3 pt-2">
               <button
                 type="submit"
-                className="flex-1 bg-blue-600 text-white rounded-lg px-4 py-3 font-medium hover:bg-blue-700 transition-colors"
+                className="flex-1 bg-[#D4A017] text-white font-semibold px-6 py-3 rounded-md hover:bg-[#b58912] transition"
               >
                 Add Member
               </button>
               <Link
                 href={`/group/${params.id}`}
-                className="flex-1 bg-gray-200 text-gray-700 rounded-lg px-4 py-3 font-medium hover:bg-gray-300 transition-colors text-center"
+                className="flex-1 bg-gray-200 text-gray-700 rounded-md px-4 py-3 font-medium hover:bg-gray-300 transition text-center"
               >
                 Cancel
               </Link>

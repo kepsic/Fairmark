@@ -42,19 +42,19 @@ export default function JoinGroupPage() {
   }
 
   return (
-    <div className="min-h-screen p-4">
+    <div className="p-4">
       <div className="max-w-xl mx-auto">
         <div className="mb-6">
-          <Link href="/groups" className="text-blue-600 hover:underline text-sm">
-            ← Back to groups
+          <Link href="/groups" className="text-[#005BB5] hover:underline text-sm">
+            ← Back to projects
           </Link>
         </div>
 
-        <h1 className="text-2xl font-bold mb-6">Join a Group</h1>
+        <h1 className="text-2xl font-bold mb-6 text-[#003A79]">Join a Project</h1>
 
         {/* Join by ID */}
-        <div className="rounded-lg border p-6 shadow-sm bg-white mb-6">
-          <h2 className="text-lg font-semibold mb-4">Join by Group ID</h2>
+        <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-6 mb-4">
+          <h2 className="text-lg font-semibold mb-4 text-[#003A79]">Join by Project ID</h2>
           
           <form onSubmit={handleJoinById} className="space-y-4">
             <div>
@@ -69,8 +69,8 @@ export default function JoinGroupPage() {
                   setGroupId(e.target.value)
                   setError('')
                 }}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Paste group ID here"
+                className="w-full px-4 py-2 border border-[#003A79] rounded-md bg-[#F5F5F5] focus:outline-none focus:ring-2 focus:ring-[#003A79]"
+                placeholder="Paste project ID here"
                 autoFocus
               />
               {error && (
@@ -80,20 +80,20 @@ export default function JoinGroupPage() {
 
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white rounded-lg px-4 py-3 font-medium hover:bg-blue-700 transition-colors"
+              className="w-full bg-[#D4A017] text-white font-semibold px-6 py-3 rounded-md hover:bg-[#b58912] transition"
             >
-              Join Group
+              Join Project
             </button>
           </form>
         </div>
 
         {/* Browse all groups */}
         <div>
-          <h2 className="text-lg font-semibold mb-4">Or Browse All Groups</h2>
+          <h2 className="text-lg font-semibold mb-4 text-[#003A79]">Or Browse All Projects</h2>
           {groups.length === 0 ? (
-            <div className="rounded-lg border p-8 shadow-sm bg-white text-center">
-              <p className="text-gray-500">
-                No groups available yet. Create one to get started!
+            <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-8 mb-4 text-center">
+              <p className="text-[#333333]">
+                No projects available yet. Create one to get started.
               </p>
             </div>
           ) : (
