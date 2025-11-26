@@ -6,9 +6,10 @@ type TaskTableProps = {
   tasks: Task[]
   groupId: string
   members: Array<{ id: string; name: string; role?: 'member' | 'sherpa' }>
+  currentUserName?: string
 }
 
-function TaskTable({ tasks, groupId, members }: TaskTableProps) {
+function TaskTable({ tasks, groupId, members, currentUserName }: TaskTableProps) {
   const statusColors = {
     'todo': 'bg-gray-100 text-gray-700',
     'in-progress': 'bg-yellow-100 text-yellow-700',
@@ -49,15 +50,33 @@ function TaskTable({ tasks, groupId, members }: TaskTableProps) {
               ? members.find(m => m.id === task.assignedTo)
               : null
 
+            const isMyTask = currentUserName && assignedMember && assignedMember.name === currentUserName
+
             return (
-              <tr key={task.id} className="border-b border-gray-300 odd:bg-white even:bg-[#F5F5F5]">
+              <tr 
+                key={task.id} 
+                className={`border-b border-gray-300 ${
+                  isMyTask 
+                    ? 'bg-blue-50 hover:bg-blue-100' 
+                    : 'odd:bg-white even:bg-[#F5F5F5] hover:bg-gray-100'
+                } transition-colors`}
+              >
                 <th scope="row" className="px-4 py-3">
-                  <Link
-                    href={`/group/${groupId}/tasks/${task.id}`}
-                    className="font-medium text-[#005BB5] hover:underline"
-                  >
-                    {task.title}
-                  </Link>
+                  <div className="flex items-center gap-2">
+                    {isMyTask && (
+                      <span className="text-blue-600 font-bold" title="Your task">
+                        →
+                      </span>
+                    )}
+                    <Link
+                      href={`/group/${groupId}/tasks/${task.id}`}
+                      className={`font-medium hover:underline ${
+                        isMyTask ? 'text-blue-700' : 'text-[#005BB5]'
+                      }`}
+                    >
+                      {task.title}
+                    </Link>
+                  </div>
                 </th>
                 <td className="px-4 py-3">
                   <span className={`px-2 py-1 rounded text-xs font-semibold ${statusColors[task.status]}`}>
@@ -66,8 +85,11 @@ function TaskTable({ tasks, groupId, members }: TaskTableProps) {
                 </td>
                 <td className="px-4 py-3">
                   {assignedMember ? (
-                    <span>
+                    <span className={isMyTask ? 'font-semibold text-blue-700' : ''}>
                       {assignedMember.name}
+                      {isMyTask && (
+                        <span className="ml-1 text-xs text-blue-600">(You)</span>
+                      )}
                       {assignedMember.role === 'sherpa' && (
                         <span className="ml-1 text-xs text-purple-600">●</span>
                       )}

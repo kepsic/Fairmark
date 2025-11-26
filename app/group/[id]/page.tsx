@@ -140,7 +140,7 @@ export default function GroupDashboard({ params }: { params: { id: string } }) {
               </Link>
             </div>
           </div>
-          <TaskTable tasks={group.tasks} groupId={params.id} members={group.members} />
+          <TaskTable tasks={group.tasks} groupId={params.id} members={group.members} currentUserName={currentUserName} />
         </div>
 
         {/* Contribution Graph */}
