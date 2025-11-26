@@ -5,9 +5,11 @@ import { calculateTaskBasedContribution } from '@/lib/fairness'
 type ContributionTableProps = {
   members: Member[]
   tasks?: Task[]
+  onMemberClick?: (memberId: string) => void
+  selectedMemberId?: string | null
 }
 
-function ContributionTable({ members, tasks = [] }: ContributionTableProps) {
+function ContributionTable({ members, tasks = [], onMemberClick, selectedMemberId }: ContributionTableProps) {
   // Calculate scores and percentages (hybrid: task-based + manual)
   const membersWithStats = members.map(member => {
     const taskHours = calculateTaskBasedContribution(member, tasks)
@@ -39,24 +41,44 @@ function ContributionTable({ members, tasks = [] }: ContributionTableProps) {
           </tr>
         </thead>
         <tbody>
-          {membersWithPercentage.map((member) => (
-            <tr key={member.id} className="border-b border-gray-300 odd:bg-white even:bg-[#F5F5F5]">
-              <th scope="row" className="px-4 py-3 font-medium">
-                {member.name}
-                {member.role === 'sherpa' && (
-                  <span className="ml-2 text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
-                    Sherpa
-                  </span>
-                )}
-              </th>
-              <td className="px-4 py-3 text-right text-[#005BB5] font-medium">{member.taskHours}h</td>
-              <td className="px-4 py-3 text-right">{member.hours}h</td>
-              <td className="px-4 py-3 text-right">{member.tasks}</td>
-              <td className="px-4 py-3 text-right font-semibold" aria-label={`${member.name} contribution: ${member.percentage.toFixed(1)}%`}>
-                {member.percentage.toFixed(1)}%
-              </td>
-            </tr>
-          ))}
+          {membersWithPercentage.map((member) => {
+            const isSelected = selectedMemberId === member.id
+            const isClickable = !!onMemberClick
+
+            return (
+              <tr 
+                key={member.id} 
+                onClick={() => onMemberClick?.(member.id)}
+                className={`border-b border-gray-300 ${
+                  isSelected 
+                    ? 'bg-blue-100 hover:bg-blue-200' 
+                    : 'odd:bg-white even:bg-[#F5F5F5] hover:bg-gray-100'
+                } ${isClickable ? 'cursor-pointer' : ''} transition-colors`}
+              >
+                <th scope="row" className="px-4 py-3 font-medium">
+                  <div className="flex items-center gap-2">
+                    {isSelected && (
+                      <span className="text-blue-600 font-bold">→</span>
+                    )}
+                    <span>{member.name}</span>
+                    {member.role === 'sherpa' && (
+                      <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
+                        Sherpa
+                      </span>
+                    )}
+                  </div>
+                </th>
+                <td className={`px-4 py-3 text-right font-medium ${isSelected ? 'text-blue-700' : 'text-[#005BB5]'}`}>
+                  {member.taskHours}h
+                </td>
+                <td className="px-4 py-3 text-right">{member.hours}h</td>
+                <td className="px-4 py-3 text-right">{member.tasks}</td>
+                <td className="px-4 py-3 text-right font-semibold" aria-label={`${member.name} contribution: ${member.percentage.toFixed(1)}%`}>
+                  {member.percentage.toFixed(1)}%
+                </td>
+              </tr>
+            )
+          })}
         </tbody>
       </table>
       {members.length === 0 && (

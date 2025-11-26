@@ -74,6 +74,7 @@ function convertFromDB(dbGroup: DBGroup): Group {
     assignedTo: t.assignedTo,
     hours: t.estimatedHours,
     status: t.status,
+    workLogs: t.workLogs,
   }))
 
   // Calculate hours and task counts for each member

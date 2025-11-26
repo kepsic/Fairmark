@@ -143,18 +143,201 @@ const demoGroups = [
           }
         ]
       },
-      { id: 'task-4-2', groupId: 'demo-group-4', title: 'Database Schema Design', description: 'Design normalized database schema with proper document structure for Firestore. Define TypeScript interfaces for type safety and establish relationships between collections using document references.', assignedTo: 'demo-member-4-1', status: 'done', estimatedHours: 5, actualHours: 5, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+      { 
+        id: 'task-4-2', 
+        groupId: 'demo-group-4', 
+        title: 'Database Schema Design', 
+        description: 'Design normalized database schema with proper document structure for Firestore. Define TypeScript interfaces for type safety and establish relationships between collections using document references.', 
+        assignedTo: 'demo-member-4-1', 
+        status: 'done', 
+        estimatedHours: 5, 
+        actualHours: 5, 
+        createdAt: new Date().toISOString(), 
+        updatedAt: new Date().toISOString(),
+        workLogs: [
+          {
+            id: 'log-1',
+            author: 'Andres',
+            content: 'Started schema design by listing all entities and their attributes:\n- Groups (name, description, timestamps)\n- Members (name, email, role, joinedAt)\n- Tasks (title, description, status, hours, assignedTo)\n\nResearching Firestore best practices for document relationships.',
+            createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+            hoursSpent: 1.5
+          },
+          {
+            id: 'log-2',
+            author: 'Andres',
+            content: 'Decided on top-level collections vs subcollections:\n✅ Top-level: groups, members, tasks\n❌ Not using: groups/{id}/members subcollections\n\nReason: Easier querying across all members/tasks. Trade-off: Need to manually maintain groupId references.\n\nCreated TypeScript interfaces in types.ts with proper typing.',
+            createdAt: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString(),
+            hoursSpent: 2
+          },
+          {
+            id: 'log-3',
+            author: 'Andres',
+            content: 'Added indexes for common queries:\n- members: groupId\n- tasks: groupId, assignedTo, status\n\nDocumented schema in README with ER diagram. Reviewed with team - everyone approved the structure.',
+            createdAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+            hoursSpent: 1.5
+          }
+        ]
+      },
       { id: 'task-4-3', groupId: 'demo-group-4', title: 'Context API Migration', description: 'Refactor GroupContext to use async Firebase operations instead of localStorage. Implement real-time listeners for data updates and handle loading/error states properly.', assignedTo: 'demo-member-4-1', status: 'done', estimatedHours: 6, actualHours: 6, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-      { id: 'task-4-4', groupId: 'demo-group-4', title: 'Performance Optimization', description: 'Optimize Firestore queries using proper indexing, implement query pagination, and add caching strategies to reduce read operations and improve app responsiveness.', assignedTo: 'demo-member-4-1', status: 'in-progress', estimatedHours: 7, actualHours: 0, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+      { 
+        id: 'task-4-4', 
+        groupId: 'demo-group-4', 
+        title: 'Performance Optimization', 
+        description: 'Optimize Firestore queries using proper indexing, implement query pagination, and add caching strategies to reduce read operations and improve app responsiveness.', 
+        assignedTo: 'demo-member-4-1', 
+        status: 'in-progress', 
+        estimatedHours: 7, 
+        actualHours: 0, 
+        createdAt: new Date().toISOString(), 
+        updatedAt: new Date().toISOString(),
+        workLogs: [
+          {
+            id: 'log-1',
+            author: 'Andres',
+            content: 'Started performance audit using Chrome DevTools and React Profiler:\n\n🐌 Issues found:\n- Re-rendering entire task list on every update\n- Fetching all group data on every page load\n- No memoization of expensive computations\n\nPlan: Add React.memo, useMemo, useCallback where needed. Implement incremental loading for large task lists.',
+            createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+            hoursSpent: 2
+          },
+          {
+            id: 'log-2',
+            author: 'Andres',
+            content: 'Added Firestore composite indexes for common query patterns:\n- tasks: [groupId, status, createdAt]\n- members: [groupId, role]\n\nImplemented query result caching with 5-minute TTL in GroupContext. Reduced reads by ~60% in testing.\n\nNext: Add pagination for projects with 50+ tasks.',
+            createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+            hoursSpent: 3
+          }
+        ]
+      },
       { id: 'task-4-5', groupId: 'demo-group-4', title: 'Testing Infrastructure', description: 'Set up comprehensive testing suite with Playwright for E2E tests, Jest for unit tests. Create test scenarios for critical user flows and Firebase operations.', assignedTo: 'demo-member-4-1', status: 'in-progress', estimatedHours: 3, actualHours: 0, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
 
       // Research tasks for Arto
-      { id: 'task-4-6', groupId: 'demo-group-4', title: 'User Research Interviews', description: 'Conduct 10-15 in-depth interviews with university students from different programs about their group work experiences. Focus on pain points, fairness concerns, contribution tracking methods, and conflict resolution. Document findings with quotes and themes.', assignedTo: 'demo-member-4-2', status: 'done', estimatedHours: 8, actualHours: 8, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-      { id: 'task-4-7', groupId: 'demo-group-4', title: 'Persona Development', description: 'Create 3-4 detailed user personas representing different student archetypes (e.g., overworked contributor, free-rider, project coordinator). Include goals, frustrations, behaviors, and technology comfort levels.', assignedTo: 'demo-member-4-2', status: 'done', estimatedHours: 5, actualHours: 5, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-      { id: 'task-4-8', groupId: 'demo-group-4', title: 'Journey Mapping', description: 'Create comprehensive journey map showing student experience from group formation through project completion. Identify touchpoints, emotions, pain points, and opportunities for intervention at each stage.', assignedTo: 'demo-member-4-2', status: 'in-progress', estimatedHours: 6, actualHours: 0, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+      { 
+        id: 'task-4-6', 
+        groupId: 'demo-group-4', 
+        title: 'User Research Interviews', 
+        description: 'Conduct 10-15 in-depth interviews with university students from different programs about their group work experiences. Focus on pain points, fairness concerns, contribution tracking methods, and conflict resolution. Document findings with quotes and themes.', 
+        assignedTo: 'demo-member-4-2', 
+        status: 'done', 
+        estimatedHours: 8, 
+        actualHours: 8, 
+        createdAt: new Date().toISOString(), 
+        updatedAt: new Date().toISOString(),
+        workLogs: [
+          {
+            id: 'log-1',
+            author: 'Arto',
+            content: 'Prepared interview guide with 15 open-ended questions covering:\n- Past group work experiences (positive/negative)\n- How groups divide work\n- Tracking contributions\n- Handling free-riders\n- Fairness concerns\n\nRecruited 12 students from CS, Business, Design programs via university Discord.',
+            createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+            hoursSpent: 2
+          },
+          {
+            id: 'log-2',
+            author: 'Arto',
+            content: 'Completed 6 interviews today (30-45 min each). Key themes emerging:\n\n😫 "We never know who did what until it\'s too late"\n🤝 Most groups use informal tracking (group chats, memory)\n⚖️ Strong desire for transparency without creating conflict\n\nRecording and transcribing for analysis.',
+            createdAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+            hoursSpent: 3.5
+          },
+          {
+            id: 'log-3',
+            author: 'Arto',
+            content: 'Finished remaining 6 interviews. Used affinity mapping to cluster insights:\n\n📊 Top pain points:\n1. Unequal workload (mentioned by 11/12)\n2. Lack of visibility into progress\n3. Awkward conversations about fairness\n4. Last-minute surprises\n\nQuote: "I wish there was a simple way to show everyone\'s effort without feeling like we\'re being monitored."',
+            createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+            hoursSpent: 2.5
+          }
+        ]
+      },
+      { 
+        id: 'task-4-7', 
+        groupId: 'demo-group-4', 
+        title: 'Persona Development', 
+        description: 'Create 3-4 detailed user personas representing different student archetypes (e.g., overworked contributor, free-rider, project coordinator). Include goals, frustrations, behaviors, and technology comfort levels.', 
+        assignedTo: 'demo-member-4-2', 
+        status: 'done', 
+        estimatedHours: 5, 
+        actualHours: 5, 
+        createdAt: new Date().toISOString(), 
+        updatedAt: new Date().toISOString(),
+        workLogs: [
+          {
+            id: 'log-1',
+            author: 'Arto',
+            content: 'Analyzed interview transcripts and identified 4 distinct behavioral patterns:\n\n1. The Overachiever (does most work, frustrated by freeloaders)\n2. The Coordinator (manages team, stressed about fairness)\n3. The Passive Participant (contributes minimally, avoids conflict)\n4. The Balanced Contributor (wants fair distribution)\n\nStarted persona template with demographics, goals, frustrations, tech usage.',
+            createdAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+            hoursSpent: 2
+          },
+          {
+            id: 'log-2',
+            author: 'Arto',
+            content: 'Created detailed persona cards with photos, quotes, and day-in-life scenarios:\n\n👤 Sarah (The Coordinator): CS major, organizes everything, needs visibility\n👤 Mike (The Overachiever): Perfectionist, takes on extra work, resents unfairness\n👤 Lisa (Balanced Contributor): Design student, wants transparency\n👤 Tom (Passive): Business major, contributes when asked\n\nUsed Figma for visual persona boards.',
+            createdAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
+            hoursSpent: 3
+          }
+        ]
+      },
+      { 
+        id: 'task-4-8', 
+        groupId: 'demo-group-4', 
+        title: 'Journey Mapping', 
+        description: 'Create comprehensive journey map showing student experience from group formation through project completion. Identify touchpoints, emotions, pain points, and opportunities for intervention at each stage.', 
+        assignedTo: 'demo-member-4-2', 
+        status: 'in-progress', 
+        estimatedHours: 6, 
+        actualHours: 0, 
+        createdAt: new Date().toISOString(), 
+        updatedAt: new Date().toISOString(),
+        workLogs: [
+          {
+            id: 'log-1',
+            author: 'Arto',
+            content: 'Identified 7 key stages in student group work journey:\n\n1️⃣ Group Formation (anxiety, uncertainty)\n2️⃣ Initial Planning (hope, excitement)\n3️⃣ Task Distribution (negotiation, concerns)\n4️⃣ Execution (varying emotions)\n5️⃣ Check-ins (relief or stress)\n6️⃣ Final Push (panic or confidence)\n7️⃣ Submission (exhaustion, reflection)\n\nMapping touchpoints and pain points for each stage.',
+            createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+            hoursSpent: 2.5
+          },
+          {
+            id: 'log-2',
+            author: 'Arto',
+            content: 'Created visual journey map in Miro with swim lanes:\n- Actions taken\n- Emotions felt (emoji scale)\n- Pain points (red flags)\n- Opportunities (green highlights)\n\nStarting to identify where Fairmark can intervene. Stage 3 (Task Distribution) and 4 (Execution) are critical.',
+            createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+            hoursSpent: 2
+          }
+        ]
+      },
 
       // Design tasks for Eva
-      { id: 'task-4-9', groupId: 'demo-group-4', title: 'Design System Creation', description: 'Develop comprehensive design system including color palette (primary, secondary, semantic colors), typography scale, spacing system, and component library. Create Figma library with reusable components following atomic design principles.', assignedTo: 'demo-member-4-3', status: 'done', estimatedHours: 7, actualHours: 7, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+      { 
+        id: 'task-4-9', 
+        groupId: 'demo-group-4', 
+        title: 'Design System Creation', 
+        description: 'Develop comprehensive design system including color palette (primary, secondary, semantic colors), typography scale, spacing system, and component library. Create Figma library with reusable components following atomic design principles.', 
+        assignedTo: 'demo-member-4-3', 
+        status: 'done', 
+        estimatedHours: 7, 
+        actualHours: 7, 
+        createdAt: new Date().toISOString(), 
+        updatedAt: new Date().toISOString(),
+        workLogs: [
+          {
+            id: 'log-1',
+            author: 'Eva',
+            content: 'Research phase: Analyzed competitor design systems (Material Design, Ant Design, Atlassian).\n\nColor palette decisions:\n🔵 Primary: #003A79 (trust, stability)\n🟡 Accent: #D4A017 (energy, action)\n⚪ Neutrals: Gray scale for text/backgrounds\n🟢 Success, 🔴 Error, 🟡 Warning semantic colors\n\nEnsured WCAG AA accessibility for all combinations.',
+            createdAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+            hoursSpent: 2.5
+          },
+          {
+            id: 'log-2',
+            author: 'Eva',
+            content: 'Typography system:\n- Primary font: Inter (clean, professional, open-source)\n- Scale: 12px, 14px, 16px, 20px, 24px, 32px, 48px\n- Weights: Regular (400), Medium (500), Semibold (600), Bold (700)\n\nSpacing scale: 4px base unit (4, 8, 12, 16, 24, 32, 48, 64px)\n\nDocumented usage guidelines for each size.',
+            createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+            hoursSpent: 2
+          },
+          {
+            id: 'log-3',
+            author: 'Eva',
+            content: 'Built atomic component library in Figma:\n\n⚛️ Atoms: Buttons, inputs, badges, icons\n🧩 Molecules: Form fields, cards, list items\n📦 Organisms: Navigation bar, task table, contribution graph\n\nAll components have variants for states (default, hover, active, disabled).\n\nCreated documentation page with usage examples.',
+            createdAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+            hoursSpent: 2.5
+          }
+        ]
+      },
       { 
         id: 'task-4-10', 
         groupId: 'demo-group-4', 
@@ -197,15 +380,117 @@ const demoGroups = [
           }
         ]
       },
-      { id: 'task-4-11', groupId: 'demo-group-4', title: 'High-Fidelity Mockups', description: 'Design pixel-perfect UI mockups in Figma applying the design system. Include light/dark mode variants, responsive layouts for mobile/tablet/desktop, and interactive prototype with micro-interactions.', assignedTo: 'demo-member-4-3', status: 'in-progress', estimatedHours: 10, actualHours: 0, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+      { 
+        id: 'task-4-11', 
+        groupId: 'demo-group-4', 
+        title: 'High-Fidelity Mockups', 
+        description: 'Design pixel-perfect UI mockups in Figma applying the design system. Include light/dark mode variants, responsive layouts for mobile/tablet/desktop, and interactive prototype with micro-interactions.', 
+        assignedTo: 'demo-member-4-3', 
+        status: 'in-progress', 
+        estimatedHours: 10, 
+        actualHours: 0, 
+        createdAt: new Date().toISOString(), 
+        updatedAt: new Date().toISOString(),
+        workLogs: [
+          {
+            id: 'log-1',
+            author: 'Eva',
+            content: 'Started high-fidelity designs for core screens using the design system:\n\n✅ Login page (clean, simple)\n✅ Project dashboard (cards layout, progress bars)\n✅ Task detail page (work log timeline)\n\nApplying colors, typography, spacing from design system. Everything is crisp at all zoom levels.',
+            createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+            hoursSpent: 3.5
+          },
+          {
+            id: 'log-2',
+            author: 'Eva',
+            content: 'Working on contribution visualization screens:\n- Pie chart for work distribution\n- Bar chart for hours comparison\n- Fairness badge with emoji indicators\n\nAdded hover states and tooltips. Need to finish mobile responsive variants and then start on interactive prototype.',
+            createdAt: new Date().toISOString(),
+            hoursSpent: 2.5
+          }
+        ]
+      },
 
       // Strategy tasks for Getter (Sherpa)
-      { id: 'task-4-12', groupId: 'demo-group-4', title: 'Competitive Analysis', description: 'Analyze 5-7 competing tools (Trello, Asana, Monday.com, Notion) focusing on task assignment, time tracking, and fairness features. Create comparison matrix with strengths, weaknesses, and differentiation opportunities.', assignedTo: 'demo-member-4-4', status: 'done', estimatedHours: 6, actualHours: 6, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+      { 
+        id: 'task-4-12', 
+        groupId: 'demo-group-4', 
+        title: 'Competitive Analysis', 
+        description: 'Analyze 5-7 competing tools (Trello, Asana, Monday.com, Notion) focusing on task assignment, time tracking, and fairness features. Create comparison matrix with strengths, weaknesses, and differentiation opportunities.', 
+        assignedTo: 'demo-member-4-4', 
+        status: 'done', 
+        estimatedHours: 6, 
+        actualHours: 6, 
+        createdAt: new Date().toISOString(), 
+        updatedAt: new Date().toISOString(),
+        workLogs: [
+          {
+            id: 'log-1',
+            author: 'Getter',
+            content: 'Identified competitors and created trial accounts:\n✅ Trello (simple, visual, limited time tracking)\n✅ Asana (robust, enterprise, complex for students)\n✅ Monday.com (powerful, expensive)\n✅ Notion (flexible, steep learning curve)\n✅ ClickUp (feature-rich, overwhelming)\n\nTesting each with a mock student project scenario.',
+            createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+            hoursSpent: 2
+          },
+          {
+            id: 'log-2',
+            author: 'Getter',
+            content: 'Key findings:\n\n🚫 NONE have fairness-focused features\n⏱️ Time tracking exists but not contribution comparison\n👥 No built-in "sherpa" or mentor roles\n💰 Most require paid plans for full features\n\n🎯 Our differentiation: Focus on equity, transparency, and student affordability.',
+            createdAt: new Date(Date.now() - 13 * 24 * 60 * 60 * 1000).toISOString(),
+            hoursSpent: 2.5
+          },
+          {
+            id: 'log-3',
+            author: 'Getter',
+            content: 'Created comparison matrix spreadsheet with 20+ criteria:\n- Task management (all strong)\n- Time tracking (limited)\n- Fairness metrics (NONE)\n- Price (high for students)\n- Learning curve (varies)\n\nPresented findings to team. Validated our unique value proposition around fairness and contribution visibility.',
+            createdAt: new Date(Date.now() - 11 * 24 * 60 * 60 * 1000).toISOString(),
+            hoursSpent: 1.5
+          }
+        ]
+      },
       { id: 'task-4-13', groupId: 'demo-group-4', title: 'Feature Prioritization', description: 'Facilitate prioritization workshop using MoSCoW method (Must have, Should have, Could have, Won\'t have). Create roadmap for MVP and future releases based on user value and development effort.', assignedTo: 'demo-member-4-4', status: 'done', estimatedHours: 4, actualHours: 4, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
       { id: 'task-4-14', groupId: 'demo-group-4', title: 'Usability Testing Plan', description: 'Design comprehensive usability testing protocol with 5-6 key scenarios covering task creation, assignment, and contribution tracking. Prepare screening questionnaire, test scripts, and success metrics.', assignedTo: 'demo-member-4-4', status: 'in-progress', estimatedHours: 5, actualHours: 0, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
 
       // Documentation tasks for Jarmo
-      { id: 'task-4-15', groupId: 'demo-group-4', title: 'Project Documentation', description: 'Create comprehensive documentation covering design thinking process, research findings, design decisions with rationale, technical architecture, and lessons learned. Include diagrams, screenshots, and data visualizations.', assignedTo: 'demo-member-4-5', status: 'done', estimatedHours: 7, actualHours: 7, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+      { 
+        id: 'task-4-15', 
+        groupId: 'demo-group-4', 
+        title: 'Project Documentation', 
+        description: 'Create comprehensive documentation covering design thinking process, research findings, design decisions with rationale, technical architecture, and lessons learned. Include diagrams, screenshots, and data visualizations.', 
+        assignedTo: 'demo-member-4-5', 
+        status: 'done', 
+        estimatedHours: 7, 
+        actualHours: 7, 
+        createdAt: new Date().toISOString(), 
+        updatedAt: new Date().toISOString(),
+        workLogs: [
+          {
+            id: 'log-1',
+            author: 'Jarmo',
+            content: 'Set up documentation structure in Notion:\n\n📁 1. Project Overview\n📁 2. Research & Discovery\n📁 3. Design Process\n📁 4. Technical Implementation\n📁 5. Testing & Iteration\n📁 6. Lessons Learned\n\nGathered materials from all team members - interviews, designs, code docs.',
+            createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+            hoursSpent: 1.5
+          },
+          {
+            id: 'log-2',
+            author: 'Jarmo',
+            content: 'Documented research phase:\n- Synthesized Arto\'s interview findings into key insights\n- Created visual personas gallery\n- Mapped journey from Arto\'s work\n- Added competitive analysis matrix from Getter\n\nUsed charts and infographics to make data scannable.',
+            createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+            hoursSpent: 2.5
+          },
+          {
+            id: 'log-3',
+            author: 'Jarmo',
+            content: 'Technical documentation:\n- Andres provided architecture diagrams (Firebase, Next.js stack)\n- Documented data model with ER diagrams\n- Added code snippets for key features\n- Created deployment guide for Vercel\n\nEva\'s design system documented with component examples.',
+            createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+            hoursSpent: 2
+          },
+          {
+            id: 'log-4',
+            author: 'Jarmo',
+            content: 'Final polish:\n✅ Added table of contents with anchors\n✅ Embedded Figma prototypes\n✅ Screenshots of all major features\n✅ Lessons learned section (what worked, what didn\'t)\n✅ Team reflection quotes\n\nShared with team for review. Documentation complete!',
+            createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+            hoursSpent: 1
+          }
+        ]
+      },
       { id: 'task-4-16', groupId: 'demo-group-4', title: 'Stakeholder Presentations', description: 'Design and deliver bi-weekly progress presentations to course instructors and peers. Include demo videos, user feedback highlights, metrics, and next steps. Create visually engaging slides with clear narrative.', assignedTo: 'demo-member-4-5', status: 'done', estimatedHours: 6, actualHours: 6, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
       { id: 'task-4-17', groupId: 'demo-group-4', title: 'Final Report Writing', description: 'Write 25-30 page academic report following design thinking methodology. Cover problem definition, research phase, ideation, prototyping, testing, and final solution. Include appendices with raw data, interview transcripts, and test results.', assignedTo: 'demo-member-4-5', status: 'in-progress', estimatedHours: 8, actualHours: 0, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
 

@@ -2,14 +2,20 @@ import React from 'react'
 import Link from 'next/link'
 import { Task } from '@/context/GroupContext'
 
+type SortField = 'title' | 'status' | 'assignedTo' | 'hours'
+type SortOrder = 'asc' | 'desc'
+
 type TaskTableProps = {
   tasks: Task[]
   groupId: string
   members: Array<{ id: string; name: string; role?: 'member' | 'sherpa' }>
   currentUserName?: string
+  sortField?: SortField
+  sortOrder?: SortOrder
+  onSort?: (field: SortField) => void
 }
 
-function TaskTable({ tasks, groupId, members, currentUserName }: TaskTableProps) {
+function TaskTable({ tasks, groupId, members, currentUserName, sortField, sortOrder, onSort }: TaskTableProps) {
   const statusColors = {
     'todo': 'bg-gray-100 text-gray-700',
     'in-progress': 'bg-yellow-100 text-yellow-700',
@@ -30,6 +36,28 @@ function TaskTable({ tasks, groupId, members, currentUserName }: TaskTableProps)
     )
   }
 
+  const SortableHeader = ({ field, label, align = 'left' }: { field: SortField; label: string; align?: 'left' | 'right' }) => {
+    const isActive = sortField === field
+    const alignClass = align === 'right' ? 'justify-end' : 'justify-start'
+    
+    return (
+      <th 
+        scope="col" 
+        className={`px-4 py-3 ${onSort ? 'cursor-pointer select-none hover:bg-[#004a8f]' : ''}`}
+        onClick={() => onSort?.(field)}
+      >
+        <div className={`flex items-center gap-1 ${alignClass}`}>
+          <span>{label}</span>
+          {isActive && (
+            <span className="text-white">
+              {sortOrder === 'asc' ? '↑' : '↓'}
+            </span>
+          )}
+        </div>
+      </th>
+    )
+  }
+
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-sm text-left" aria-label="Project tasks">
@@ -38,10 +66,10 @@ function TaskTable({ tasks, groupId, members, currentUserName }: TaskTableProps)
         </caption>
         <thead className="text-xs uppercase bg-[#003A79] text-white">
           <tr>
-            <th scope="col" className="px-4 py-3">Task</th>
-            <th scope="col" className="px-4 py-3">Status</th>
-            <th scope="col" className="px-4 py-3">Assigned To</th>
-            <th scope="col" className="px-4 py-3 text-right">Hours</th>
+            <SortableHeader field="title" label="Task" />
+            <SortableHeader field="status" label="Status" />
+            <SortableHeader field="assignedTo" label="Assigned To" />
+            <SortableHeader field="hours" label="Hours" align="right" />
           </tr>
         </thead>
         <tbody>
