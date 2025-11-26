@@ -1,0 +1,190 @@
+# FULL CLAUDE SONNET PROMPT (INCREMENTAL DEVELOPMENT MODE)
+
+You are a senior full‑stack engineer, systems designer and product architect.
+Your task is to build **Fairmark – University Groupwork Fairness & Task Assignment System** using **Next.js 14**, **TypeScript**, **Tailwind**, **App Router**, **localStorage-only persistence**, and optional **Canvas LMS mock integration**.
+
+Claude should divide the work into **incremental development tasks**, delivering the system step-by-step, with runnable code at each stage.
+
+============================================================
+# 1. CORE PROBLEM STATEMENT
+============================================================
+
+University group projects often suffer from:
+- Uneven workload distribution  
+- “Free riders” contributing minimally  
+- High-performing members being overworked  
+- No objective assessment framework  
+- Professors lacking visibility into actual contributions  
+- Task ownership confusion  
+- Communication delays (“who does what?”)
+
+Goal: Build a prototype that **solves unfairness in groupwork** through:
+- Transparent task assignment  
+- Contribution tracking  
+- Progress visualization  
+- Objective fairness scoring  
+- Teacher view for evaluation  
+- Canvas LMS integration mock (“Load from Canvas”)  
+- Lightweight UX but complete logic  
+
+============================================================
+# 2. HIGH-LEVEL FEATURES TO BUILD
+============================================================
+
+## STUDENT FEATURES
+- First name login (localStorage)
+- Join/create project
+- Accept tasks or be auto‑assigned
+- Log hours & progress
+- See fairness dashboard
+- Special “Sherpa” role (coordination-focused)
+
+## PROJECT LEAD FEATURES
+- Create/edit project
+- Create tasks
+- Assign or auto‑assign tasks
+- Monitor contributions
+- Review fairness warnings
+
+## TEACHER FEATURES
+- View all projects
+- See fairness score
+- See member contributions
+- Download summary (mock only)
+- Warnings for overburdened contributors
+
+## CANVAS INTEGRATION MOCK
+Button:
+“📥 Load Data From Canvas (Mock)”
+Loads:
+- Predefined users
+- Predefined project
+- Predefined tasks
+- Demonstrates fairness problems
+
+============================================================
+# 3. DATA MODELS (USE EXACTLY THESE)
+============================================================
+
+type Role = "member" | "sherpa";
+
+type User = {
+  id: string
+  name: string
+  role: "student" | "teacher"
+}
+
+type Task = {
+  id: string
+  title: string
+  description: string
+  assignedTo: string | null
+  hours: number
+  status: "todo" | "in-progress" | "done"
+}
+
+type Project = {
+  id: string
+  name: string
+  description?: string
+  projectLead: string
+  members: string[]
+  tasks: Task[]
+  totalTasksNeeded: number
+}
+
+============================================================
+# 4. FAIRNESS ALGORITHM
+============================================================
+
+effortScore = sum(hours from assigned tasks)
+totalEffort = sum(all members' effortScore)
+percent = (effortScore / totalEffort) * 100
+
+Fairness:
+- RED → one person > 50%
+- YELLOW → top two > 80%
+- GREEN → otherwise
+
+============================================================
+# 5. REQUIRED PAGES (Next.js App Router)
+============================================================
+
+app/login/page.tsx
+app/projects/page.tsx
+app/projects/new/page.tsx
+app/project/[id]/page.tsx
+app/project/[id]/tasks/new/page.tsx
+app/project/[id]/tasks/[taskId]/page.tsx
+app/project/[id]/add-member/page.tsx
+app/teacher/projects/page.tsx
+app/teacher/project/[id]/page.tsx
+app/canvas/mock/page.tsx
+
+============================================================
+# 6. REQUIRED COMPONENTS
+============================================================
+
+ProgressBar.tsx
+TaskTable.tsx
+ContributionGraph.tsx
+FairnessBadge.tsx
+ProjectCard.tsx
+CanvasMockLoader.tsx
+
+============================================================
+# 7. REQUIRED CONTEXT
+============================================================
+
+context/ProjectContext.tsx
+
+============================================================
+# 8. CANVAS IMPORT MOCK DATASET
+============================================================
+
+Project: SaaS Platform MVP  
+Members: Alice, Bob, Charlie, Diana  
+Project Lead: Alice  
+Tasks:
+- Wireframes – Alice – 8h – done
+- API Design – Bob – 4h – done
+- UI Components – Alice – 6h – in-progress
+- Testing – Charlie – 3h – todo
+- User Stories – Diana – 5h – done
+- Deployment – Alice – 7h – todo
+
+Total hours:
+- Alice: 21h (57%) → RED  
+- Bob: 4h  
+- Charlie: 3h  
+- Diana: 5h  
+
+============================================================
+# 9. DEVELOPMENT MODE (IMPORTANT)
+============================================================
+
+Claude must:
+1. Break development into incremental steps  
+2. For each step deliver:
+   - Explanation
+   - Code
+   - File paths  
+3. Maintain runnable state at every increment  
+4. Ask for confirmation before proceeding  
+5. Never compress or skip steps  
+
+============================================================
+# 10. FINAL DELIVERABLES
+============================================================
+
+Claude will:
+- Build complete runnable prototype  
+- Implement Canvas mock loader  
+- Add teacher view  
+- Add fairness dashboards  
+- Implement incremental tasks  
+- Output full code for all files  
+
+============================================================
+# END OF FULL PROMPT
+============================================================

@@ -1,0 +1,195 @@
+You are a senior full-stack engineer.  
+Help me build a **Next.js 14 (App Router + TypeScript + Tailwind)** prototype that solves the university groupwork fairness problem:
+
+> Some students contribute significantly more, everyone gets the same grade → unfairness → demotivation.
+
+This prototype must be **frontend-only**, storing all data in **localStorage**.
+
+# 🧩 FEATURES & REQUIREMENTS
+
+## 1) User identification (simple)
+No authentication.  
+Just:
+
+### `/login`
+- Ask for **first name**
+- Save into `localStorage.currentUserName`
+- Redirect to `/groups`
+
+Load user automatically on other pages.
+
+---
+
+## 2) Group creation **and** joining  
+Users can either:
+
+### **A) Create a new group**
+Page: `/groups/new`
+
+Ask for:
+- **Group / project name**
+- Optional description
+
+Create:
+- `groupId = crypto.randomUUID()`
+- Initial group object stored under `localStorage.fairGroupworkGroups`
+
+Group structure:
+
+```ts
+type Member = {
+  id: string
+  name: string
+  hours: number
+  tasks: number
+}
+
+type Group = {
+  id: string
+  name: string
+  description?: string
+  members: Member[]
+  totalTasksNeeded: number
+}
+```
+
+Add **current user automatically** into the group as the first member.
+
+After creation → redirect to `/group/{id}`.
+
+---
+
+### **B) Join an existing group**
+Page: `/groups/join`
+
+Options:
+
+1. User enters **group ID** manually  
+   → Validate existence  
+   → Add user into the group  
+   → Redirect to `/group/{id}`
+
+2. Show list of all groups stored in localStorage  
+   → Clicking joins immediately  
+   → Redirect
+
+This is prototype-level, no auth needed — anyone can join any group.
+
+---
+
+## 3) Main dashboard: `/group/[id]`
+
+Dashboard shows:
+
+### **1. Greeting**
+“Hi {currentUserName}, welcome to {groupName}”
+
+### **2. Overall progress bar**
+Formula:
+
+```
+totalLoggedTasks = sum(member.tasks)
+progress = totalLoggedTasks / totalTasksNeeded * 100
+```
+
+Show a big Tailwind progress bar.
+
+### **3. Contribution table**
+Columns:
+- Member
+- Hours
+- Tasks
+- Contribution %  
+Formula:
+
+```
+score = hours + tasks * 0.5
+percent = score / sum(scores) * 100
+```
+
+### **4. Fairness / alignment badge**
+Rules:
+
+- If one member > 50% → red badge “Unbalanced”
+- If top two > 80% → yellow badge “Slightly unbalanced”
+- Else → green badge “Balanced”
+
+### **5. Buttons**
+- Add work → `/group/[id]/contribute`
+- Add member → `/group/[id]/add-member`
+- Change project settings → `/group/[id]/settings`
+- Back to group list → `/groups`
+
+---
+
+## 4) Log contribution page: `/group/[id]/contribute`
+
+Form fields:
+
+- Select **member** (dropdown)
+- Hours worked (number)
+- Tasks completed (number)
+
+On submit:
+- Update localStorage group state
+- Redirect to dashboard
+
+---
+
+## 5) Add member page: `/group/[id]/add-member`
+
+Very simple form:
+- Name
+- Add → pushes into group.members[]
+
+---
+
+## 6) Pages required
+
+Claude must generate complete runnable code for:
+
+### Required pages
+- `app/layout.tsx`
+- `app/login/page.tsx`
+- `app/groups/page.tsx` (list + join options)
+- `app/groups/new/page.tsx` (create group)
+- `app/groups/join/page.tsx` (join by ID + list)
+- `app/group/[id]/page.tsx` (dashboard)
+- `app/group/[id]/contribute/page.tsx`
+- `app/group/[id]/add-member/page.tsx`
+- `app/group/[id]/settings/page.tsx`
+
+### Required components
+- `components/ProgressBar.tsx`
+- `components/ContributionTable.tsx`
+- `components/FairnessBadge.tsx`
+- `components/GroupCard.tsx`
+
+### Required context
+- `context/GroupContext.tsx`
+Handles loading/saving all groups to localStorage.
+
+---
+
+## 7) UX Rules
+- Mobile-first
+- Tailwind:
+  - container: `max-w-xl mx-auto p-4`
+  - buttons: `bg-blue-600 text-white rounded px-4 py-2`
+  - card: `rounded-lg border p-4 shadow-sm`
+
+---
+
+## 8) Output Format
+The answer must:
+
+- Include full code for every file
+- No placeholders, no ellipses
+- Fully runnable after `npx create-next-app@latest --ts --tailwind`
+- Include a brief explanation of localStorage state lifecycle
+
+---
+
+If anything is unclear, make a reasonable assumption.
+
+# END OF PROMPT

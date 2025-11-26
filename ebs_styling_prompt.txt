@@ -1,0 +1,290 @@
+# FAIRMARK EBS-STYLED UI PROMPT (FOR CLAUDE SONNET)
+
+You are a senior full‑stack engineer and UI designer.
+Your job is to style the entire Fairmark application using the **EBS (Estonian Business School)** visual identity.
+
+Apply these design principles to all components, pages, and layouts.
+
+============================================================
+# 1. EBS COLOR PALETTE (USE EXACT VALUES)
+============================================================
+
+Primary EBS Navy
+- HEX: #003A79
+
+Secondary Blue
+- HEX: #005BB5
+
+Gold Accent (CTAs)
+- HEX: #D4A017
+
+Light Gray Background
+- HEX: #F5F5F5
+
+Dark Gray Text
+- HEX: #333333
+
+============================================================
+# 2. TYPOGRAPHY (REQUIRED)
+============================================================
+
+Use Google Fonts:
+
+HEADINGS (Montserrat)
+- weight: 600 / 700
+- geometric, bold, academic
+
+BODY (Open Sans)
+- weight: 300 / 400 / 600
+- clean, readable, professional
+
+Import example:
+```ts
+import { Montserrat, Open_Sans } from "next/font/google";
+
+const montserrat = Montserrat({ subsets: ["latin"], weight: ["400","600","700"] });
+const opensans = Open_Sans({ subsets: ["latin"], weight: ["300","400","600"] });
+```
+
+============================================================
+# 3. GLOBAL LAYOUT STYLE
+============================================================
+
+Apply to every page:
+
+- White background cards
+- Navy header with white text
+- Gold buttons for primary actions
+- Large spacing, premium feel
+- Rounded corners: 6px
+- Very clean, academic layout
+
+Base structure:
+
+```tsx
+<body className={opensans.className + " bg-[#F5F5F5] min-h-screen"}>
+  <header className="bg-[#003A79] text-white py-4 px-6 shadow-md">
+    <h1 className={montserrat.className + " text-xl font-bold tracking-wide"}>
+      Fairmark – Project Fairness Manager
+    </h1>
+  </header>
+  <main className="max-w-3xl mx-auto p-6">{children}</main>
+</body>
+```
+
+============================================================
+# 4. BUTTON STYLES (STRICT)
+============================================================
+
+PRIMARY CTA (Gold):
+```tsx
+className="
+  bg-[#D4A017]
+  text-white
+  font-semibold
+  px-6 py-3
+  rounded-md
+  hover:bg-[#b58912]
+  transition
+"
+```
+
+SECONDARY (Navy):
+```tsx
+className="
+  bg-[#003A79]
+  text-white
+  font-semibold
+  px-5 py-2
+  rounded-md
+  hover:bg-[#002d5c]
+  transition
+"
+```
+
+TERTIARY (Outline):
+```tsx
+className="
+  border border-[#003A79]
+  text-[#003A79]
+  px-5 py-2
+  rounded-md
+  hover:bg-[#003A79] hover:text-white
+  transition
+"
+```
+
+============================================================
+# 5. CARD STYLE
+============================================================
+
+```tsx
+className="
+  bg-white
+  border border-gray-200
+  shadow-sm
+  rounded-lg
+  p-6
+  mb-4
+"
+```
+
+============================================================
+# 6. PROGRESS BAR STYLE
+============================================================
+
+Track background:
+- `bg-gray-300 rounded-full h-3`
+
+Filled bar:
+- `bg-[#005BB5] rounded-full`
+
+============================================================
+# 7. FAIRNESS BADGE STYLE
+============================================================
+
+RED:
+```tsx
+bg-red-600 text-white
+```
+
+YELLOW:
+```tsx
+bg-yellow-500 text-black
+```
+
+GREEN:
+```tsx
+bg-green-600 text-white
+```
+
+Badges must be rounded-full, px-3, py-1, text-sm, font-semibold.
+
+============================================================
+# 8. TABLE STYLE
+============================================================
+
+- Header background: `bg-[#003A79] text-white`
+- Body rows: `odd:bg-white even:bg-[#F5F5F5]`
+- Use `border-b border-gray-300`
+- Use Montserrat for headers
+
+============================================================
+# 9. PAGE-SPECIFIC REQUIREMENTS
+============================================================
+
+LOGIN PAGE:
+- Large navy header
+- Centered card with white background
+- Gold CTA button
+- Academic look
+
+PROJECT LIST PAGE:
+- Each project displayed in a white card
+- Gold button for "Create Project"
+- Navy button for "Load Canvas Demo"
+
+PROJECT DASHBOARD:
+- Use EBS layout colors
+- Use gold secondary CTAs
+- Tables in EBS style
+- Progress bar in secondary blue
+- Fairness badge displayed prominently
+
+TEACHER DASHBOARD:
+- More formal tone
+- Use navy for section titles
+- Highlight fairness results with badges
+
+============================================================
+# 10. CLAUDE MUST APPLY THESE STYLES TO:
+============================================================
+
+- ALL pages listed in previous Fairmark prompt
+- ALL components:
+  - ProgressBar
+  - FairnessBadge
+  - ProjectCard
+  - TaskTable
+  - ContributionGraph
+  - CanvasMockLoader
+
+- ALL input fields:
+  - rounded
+  - navy border
+  - soft gray background
+  - focus outline navy
+
+============================================================
+# 11. HOW CLAUDE MUST OUTPUT RESULTS
+============================================================
+
+- Apply EBS styling to *every component*
+- No placeholders, no pseudo-code
+- Must output complete Tailwind classes
+- Must integrate font imports
+- Must update layout, pages, components
+- Must ensure the entire UI matches EBS brand visually
+
+============================================================
+# END OF PROMPT
+
+
+============================================================
+# 12. BRAND ARCHETYPE & COMMUNICATION TONE (MANDATORY)
+============================================================
+
+Fairmark must follow the **SAGE archetype**, specifically the *Analyst / Academic Sage* subtype.
+This guides UI decisions, UX tone, hierarchy, and interaction patterns.
+
+## 12.1 Core Values
+- objectivity
+- truth-seeking
+- clarity
+- neutrality
+- transparency
+- analytic rigor
+- academic professionalism
+
+## 12.2 Tone Requirements
+- neutral and precise
+- explanatory, not emotional
+- no slang or playful text
+- no exclamation marks unless essential
+- focus on clarity and data-backed insights
+
+Examples:
+
+Not allowed:
+“Wow, looks like someone is doing ALL the work 😅”
+
+Correct:
+“Alice contributed 57% of total hours. This exceeds the recommended threshold.”
+
+## 12.3 Visual Expression (EBS + Sage)
+- clean layout
+- academic color palette
+- purposeful gold CTAs
+- high readability (Open Sans)
+- authoritative headings (Montserrat)
+
+## 12.4 UX Behavior Rules
+- minimize cognitive load
+- metrics must be visually self-evident
+- dashboards must highlight truth clearly
+- teacher views must be strongly analytic
+- student views must reinforce accountability
+
+## 12.5 Communication Standards
+Errors:
+“Unable to load project data.”
+
+Warnings:
+“Workload threshold exceeded.”
+
+Help text:
+“These metrics summarize task-level contributions across all team members.”
+
+============================================================
+# END OF UPDATED PROMPT
+============================================================
