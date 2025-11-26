@@ -734,6 +734,67 @@ const demoGroups = [
         attendees: ['demo-member-4-1', 'demo-member-4-2', 'demo-member-4-3', 'demo-member-4-4', 'demo-member-4-5'],
         createdBy: 'Getter',
         createdAt: new Date().toISOString()
+      },
+      // Weekly check-in meetings (recurring pattern)
+      {
+        id: 'meeting-4-10',
+        title: 'Weekly Check-in #1',
+        description: 'Regular weekly sync - share progress updates, discuss blockers, review task assignments, and coordinate next steps.',
+        date: new Date(Date.now() - 21 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        startTime: '17:00',
+        endTime: '17:45',
+        location: 'Zoom (link in Discord)',
+        attendees: ['demo-member-4-1', 'demo-member-4-2', 'demo-member-4-3', 'demo-member-4-4', 'demo-member-4-5'],
+        createdBy: 'Getter',
+        createdAt: new Date(Date.now() - 24 * 24 * 60 * 60 * 1000).toISOString()
+      },
+      {
+        id: 'meeting-4-11',
+        title: 'Weekly Check-in #2',
+        description: 'Regular weekly sync - progress updates, blocker discussion, task coordination. Submit check-in forms before meeting.',
+        date: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        startTime: '17:00',
+        endTime: '17:45',
+        location: 'Zoom (link in Discord)',
+        attendees: ['demo-member-4-1', 'demo-member-4-2', 'demo-member-4-3', 'demo-member-4-4', 'demo-member-4-5'],
+        createdBy: 'Getter',
+        createdAt: new Date(Date.now() - 17 * 24 * 60 * 60 * 1000).toISOString()
+      },
+      {
+        id: 'meeting-4-12',
+        title: 'Weekly Check-in #3',
+        description: 'Regular weekly sync - progress updates, blocker discussion, task review. Please complete your weekly check-in first!',
+        date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        startTime: '17:00',
+        endTime: '17:45',
+        location: 'Student Center - Conference Room 2',
+        attendees: ['demo-member-4-1', 'demo-member-4-2', 'demo-member-4-3', 'demo-member-4-5'],
+        createdBy: 'Getter',
+        createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString()
+      },
+      {
+        id: 'meeting-4-13',
+        title: 'Weekly Check-in #4 - THIS WEEK',
+        description: 'Regular weekly sync meeting. Review this week\'s check-ins, discuss progress, address any blockers, plan next week tasks.',
+        date: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        startTime: '17:00',
+        endTime: '17:45',
+        location: 'Zoom (link in Discord)',
+        attendees: ['demo-member-4-1', 'demo-member-4-2', 'demo-member-4-3', 'demo-member-4-4', 'demo-member-4-5'],
+        createdBy: 'Getter',
+        createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString()
+      },
+      {
+        id: 'meeting-4-14',
+        title: 'Weekly Check-in #5',
+        description: 'Regular weekly team sync - progress updates, blocker resolution, task planning. Remember to submit check-ins!',
+        date: new Date(Date.now() + 9 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        startTime: '17:00',
+        endTime: '17:45',
+        location: 'Zoom (link in Discord)',
+        attendees: ['demo-member-4-1', 'demo-member-4-2', 'demo-member-4-3', 'demo-member-4-4', 'demo-member-4-5'],
+        createdBy: 'Getter',
+        createdAt: new Date().toISOString()
       }
     ],
     peerReviews: [

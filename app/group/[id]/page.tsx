@@ -46,6 +46,13 @@ export default function GroupDashboard({ params }: { params: { id: string } }) {
     }
   }, [currentUserName, router])
 
+  useEffect(() => {
+    if (group) {
+      console.log('[Dashboard] Group loaded:', group.id)
+      console.log('[Dashboard] Meetings:', group.meetings?.length || 0, group.meetings)
+    }
+  }, [group])
+
   if (!currentUserName) {
     return null
   }

@@ -149,6 +149,7 @@ export async function getGroupById(groupId: string): Promise<GroupWithData | nul
     )
     const meetingsSnap = await getDocs(meetingsQuery)
     const meetings = meetingsSnap.docs.map(d => d.data() as Meeting)
+    console.log(`[Firebase] Loaded ${meetings.length} meetings for group ${groupId}`)
 
     return {
       ...groupData,

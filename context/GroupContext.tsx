@@ -136,6 +136,9 @@ function convertFromDB(dbGroup: DBGroup): Group {
     tasks,
     totalTasksNeeded,
     projectLead,
+    checkIns: dbGroup.checkIns,
+    peerReviews: dbGroup.peerReviews,
+    meetings: dbGroup.meetings,
   }
 }
 

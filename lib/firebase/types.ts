@@ -65,6 +65,7 @@ export type PeerReview = {
 
 export type Meeting = {
   id: string
+  groupId: string
   title: string
   description: string
   date: string
