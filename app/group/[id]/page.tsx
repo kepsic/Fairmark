@@ -11,6 +11,15 @@ import FairnessBadge from '@/components/FairnessBadge'
 import TaskTable from '@/components/TaskTable'
 import GanttChart from '@/components/GanttChart'
 import TaskModal from '@/components/TaskModal'
+import Leaderboard from '@/components/Leaderboard'
+import UpdateReminder from '@/components/UpdateReminder'
+import CheckInTimeline from '@/components/CheckInTimeline'
+import RoleAssignment from '@/components/RoleAssignment'
+import WeeklyCheckInForm from '@/components/WeeklyCheckInForm'
+import MeetingCalendar from '@/components/MeetingCalendar'
+import type { Meeting as MeetingType } from '@/components/MeetingCalendar'
+import { calculateContributionScores, calculateBadges, calculateStreak } from '@/lib/contributionScore'
+import type { CheckIn, Member } from '@/context/GroupContext'
 
 type SortField = 'title' | 'status' | 'assignedTo' | 'hours'
 type SortOrder = 'asc' | 'desc'
@@ -25,6 +34,8 @@ export default function GroupDashboard({ params }: { params: { id: string } }) {
   const [searchQuery, setSearchQuery] = useState('')
   const [viewMode, setViewMode] = useState<'table' | 'gantt'>('gantt')
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null)
+  const [showCheckInForm, setShowCheckInForm] = useState(false)
+  const [activeSection, setActiveSection] = useState<string | null>(null)
   const router = useRouter()
   const { getGroup, currentUserName, autoAssignTasks } = useGroups()
   const group = getGroup(params.id)
@@ -61,6 +72,51 @@ export default function GroupDashboard({ params }: { params: { id: string } }) {
   }
 
   const totalLoggedTasks = group.members.reduce((sum, m) => sum + m.tasks, 0)
+
+  // Calculate enhanced member data with scores and badges
+  const enhancedMembers = calculateContributionScores(
+    group.members,
+    group.tasks,
+    group.checkIns || [],
+    group.peerReviews || []
+  ).map(member => {
+    const badgesRaw = calculateBadges(member, group.tasks, group.checkIns || [], group.peerReviews || [])
+    const badges = badgesRaw.map(b => ({ ...b, id: `${member.id}-${b.type}` }))
+    const streakWeeks = calculateStreak(member.id, group.checkIns || [])
+    return { ...member, badges, streakWeeks }
+  })
+
+  // Mock check-in submission handler
+  const handleCheckInSubmit = (checkIn: Omit<CheckIn, 'id' | 'createdAt'>) => {
+    const newCheckIn: CheckIn = {
+      ...checkIn,
+      id: `checkin-${Date.now()}`,
+      createdAt: new Date().toISOString(),
+    }
+    // TODO: Integrate with Firebase operations
+    console.log('Check-in submitted:', newCheckIn)
+    alert('Check-in submitted successfully! (Demo mode - not saved to database)')
+    setShowCheckInForm(false)
+  }
+
+  // Mock role update handler
+  const handleUpdateMemberRoles = (memberId: string, roles: any[]) => {
+    // TODO: Integrate with Firebase operations
+    console.log('Update roles for', memberId, ':', roles)
+    alert(`Roles updated! (Demo mode - not saved to database)`)
+  }
+
+  // Mock meeting handler
+  const handleAddMeeting = (meeting: Omit<MeetingType, 'id' | 'createdAt'>) => {
+    const newMeeting: MeetingType = {
+      ...meeting,
+      id: `meeting-${Date.now()}`,
+      createdAt: new Date().toISOString(),
+    }
+    // TODO: Integrate with Firebase operations
+    console.log('Meeting scheduled:', newMeeting)
+    alert(`Meeting "${meeting.title}" scheduled for ${meeting.date}! (Demo mode - not saved to database)`)
+  }
 
   // Filter, search, and sort tasks
   const filteredTasks = group.tasks
@@ -385,7 +441,19 @@ export default function GroupDashboard({ params }: { params: { id: string } }) {
         <div className="bg-white border border-gray-200 shadow-sm rounded-lg mb-4 overflow-hidden">
           <div className="p-4 border-b">
             <h2 className="text-lg font-semibold text-[#003A79]">Team Contributions</h2>
-            <p className="text-xs text-gray-600 mt-1">Click on a member to filter tasks</p>
+            <p className="text-xs text-gray-600 mt-1">
+              Click on a member to filter tasks. Badges: 
+              <span className="ml-1 inline-flex items-center gap-1 flex-wrap">
+                <span className="bg-orange-100 text-orange-800 px-1.5 py-0.5 rounded font-semibold text-[10px]">Heavy Lifter</span>
+                (most work),
+                <span className="bg-green-100 text-green-800 px-1.5 py-0.5 rounded font-semibold text-[10px]">Balanced</span>
+                (even contribution),
+                <span className="bg-yellow-100 text-yellow-800 px-1.5 py-0.5 rounded font-semibold text-[10px]">Needs Support</span>
+                (below average),
+                <span className="bg-purple-100 text-purple-800 px-1.5 py-0.5 rounded font-semibold text-[10px]">Sherpa</span>
+                (project guide & mentor)
+              </span>
+            </p>
           </div>
           <ContributionTable 
             members={group.members} 
@@ -398,6 +466,157 @@ export default function GroupDashboard({ params }: { params: { id: string } }) {
             selectedMemberId={filteredMemberId}
           />
         </div>
+
+        {/* Leaderboard & Gamification */}
+        <div className="bg-white border border-gray-200 shadow-sm rounded-lg mb-4 overflow-hidden">
+          <div className="p-4 border-b flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-semibold text-[#003A79]">🎮 Gamification</h2>
+              <p className="text-xs text-gray-600 mt-1">
+                Rankings based on tasks, hours, check-ins & peer reviews
+              </p>
+            </div>
+            <button
+              onClick={() => setActiveSection(activeSection === 'leaderboard' ? null : 'leaderboard')}
+              className="text-xs text-blue-600 hover:underline"
+            >
+              {activeSection === 'leaderboard' ? 'Hide' : 'Show'}
+            </button>
+          </div>
+          {activeSection === 'leaderboard' && (
+            <div className="p-4">
+              <Leaderboard members={enhancedMembers} />
+            </div>
+          )}
+        </div>
+
+        {/* Update Reminders */}
+        <div className="bg-white border border-gray-200 shadow-sm rounded-lg mb-4 overflow-hidden">
+          <div className="p-4 border-b flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-semibold text-[#003A79]">⏰ Weekly Participation</h2>
+              <p className="text-xs text-gray-600 mt-1">
+                Track who needs to submit their weekly check-in
+              </p>
+            </div>
+            <button
+              onClick={() => setActiveSection(activeSection === 'reminders' ? null : 'reminders')}
+              className="text-xs text-blue-600 hover:underline"
+            >
+              {activeSection === 'reminders' ? 'Hide' : 'Show'}
+            </button>
+          </div>
+          {activeSection === 'reminders' && (
+            <div className="p-4">
+              <UpdateReminder
+                members={enhancedMembers}
+                checkIns={group.checkIns || []}
+                onRemindMember={(memberId) => {
+                  const member = group.members.find(m => m.id === memberId)
+                  alert(`Reminder sent to ${member?.name}! (Demo mode)`)
+                }}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Check-in Timeline */}
+        <div className="bg-white border border-gray-200 shadow-sm rounded-lg mb-4 overflow-hidden">
+          <div className="p-4 border-b flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-semibold text-[#003A79]">📋 Weekly Check-Ins</h2>
+              <p className="text-xs text-gray-600 mt-1">
+                Team progress updates and reflections
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setShowCheckInForm(true)}
+                className="text-xs bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700 transition"
+              >
+                Submit Check-In
+              </button>
+              <button
+                onClick={() => setActiveSection(activeSection === 'checkins' ? null : 'checkins')}
+                className="text-xs text-blue-600 hover:underline"
+              >
+                {activeSection === 'checkins' ? 'Hide' : 'Show'}
+              </button>
+            </div>
+          </div>
+          {activeSection === 'checkins' && (
+            <div className="p-4">
+              <CheckInTimeline
+                checkIns={group.checkIns || []}
+                groupMembers={group.members}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Role Assignment */}
+        <div className="bg-white border border-gray-200 shadow-sm rounded-lg mb-4 overflow-hidden">
+          <div className="p-4 border-b flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-semibold text-[#003A79]">👥 Role Management</h2>
+              <p className="text-xs text-gray-600 mt-1">
+                Assign functional roles to team members
+              </p>
+            </div>
+            <button
+              onClick={() => setActiveSection(activeSection === 'roles' ? null : 'roles')}
+              className="text-xs text-blue-600 hover:underline"
+            >
+              {activeSection === 'roles' ? 'Hide' : 'Show'}
+            </button>
+          </div>
+          {activeSection === 'roles' && (
+            <div className="p-4">
+              <RoleAssignment
+                members={group.members}
+                onUpdateMemberRoles={handleUpdateMemberRoles}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Meeting Calendar */}
+        <div className="bg-white border border-gray-200 shadow-sm rounded-lg mb-4 overflow-hidden">
+          <div className="p-4 border-b flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-semibold text-[#003A79]">📅 Meeting Calendar</h2>
+              <p className="text-xs text-gray-600 mt-1">
+                Schedule and track team meetings
+              </p>
+            </div>
+            <button
+              onClick={() => setActiveSection(activeSection === 'meetings' ? null : 'meetings')}
+              className="text-xs text-blue-600 hover:underline"
+            >
+              {activeSection === 'meetings' ? 'Hide' : 'Show'}
+            </button>
+          </div>
+          {activeSection === 'meetings' && (
+            <div className="p-4">
+              <MeetingCalendar
+                meetings={group.meetings || []}
+                members={group.members}
+                onAddMeeting={handleAddMeeting}
+                currentUserName={currentUserName}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Check-in Form Modal */}
+        {showCheckInForm && (
+          <WeeklyCheckInForm
+            memberName={currentUserName}
+            memberId={group.members.find(m => m.name === currentUserName)?.id || 'unknown'}
+            onSubmit={handleCheckInSubmit}
+            onCancel={() => setShowCheckInForm(false)}
+          />
+        )}
 
         {/* Action Buttons */}
         <div className="space-y-3">

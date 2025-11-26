@@ -498,6 +498,338 @@ const demoGroups = [
       { id: 'task-4-18', groupId: 'demo-group-4', title: 'Ideation Workshop', description: 'Run collaborative ideation workshop using design thinking techniques (brainstorming, crazy 8s, affinity mapping). Generate 50+ feature ideas, cluster into themes, and vote on top concepts to prototype.', assignedTo: null, status: 'todo', estimatedHours: 4, actualHours: 0, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
       { id: 'task-4-19', groupId: 'demo-group-4', title: 'Usability Testing', description: 'Conduct moderated usability testing sessions with 8-10 university students. Test key workflows, measure task completion rates and time-on-task, collect qualitative feedback using think-aloud protocol. Synthesize findings into actionable recommendations.', assignedTo: null, status: 'todo', estimatedHours: 6, actualHours: 0, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
       { id: 'task-4-20', groupId: 'demo-group-4', title: 'Design Critique Session', description: 'Facilitate structured design critique following established frameworks. Present design rationale, gather constructive feedback from team and external reviewers, document suggestions, and prioritize improvements for next iteration.', assignedTo: null, status: 'todo', estimatedHours: 3, actualHours: 0, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+    ],
+    checkIns: [
+      // Week 47 - 3 weeks ago
+      {
+        id: 'checkin-4-1',
+        memberId: 'demo-member-4-1',
+        memberName: 'Andres',
+        weekOf: '2025-W47',
+        whatDidIDo: 'Completed Firebase migration from RxDB. Set up Firestore collections, implemented CRUD operations, and configured security rules. All tests passing. Also finished database schema design with proper TypeScript interfaces.',
+        whatBlockedMe: 'Had some initial confusion about Firestore composite indexes and query limitations. Took time to read documentation and experiment with different approaches.',
+        whatWillIDoNext: 'Start on performance optimization - add query caching, implement proper memoization in React components, and set up Firestore indexes for common query patterns.',
+        createdAt: new Date(Date.now() - 21 * 24 * 60 * 60 * 1000).toISOString()
+      },
+      {
+        id: 'checkin-4-2',
+        memberId: 'demo-member-4-2',
+        memberName: 'Arto',
+        weekOf: '2025-W47',
+        whatDidIDo: 'Wrapped up user research interviews - conducted 12 in-depth interviews with students from different programs. Used affinity mapping to identify key pain points. Main finding: students want transparency without feeling micromanaged.',
+        whatBlockedMe: 'Scheduling conflicts made it hard to get all interviews done. Had to work evenings and weekends to meet with people.',
+        whatWillIDoNext: 'Create user personas based on interview data. Will develop 3-4 primary personas representing different student archetypes (overachiever, balanced contributor, struggling student, free-rider).',
+        createdAt: new Date(Date.now() - 21 * 24 * 60 * 60 * 1000).toISOString()
+      },
+      {
+        id: 'checkin-4-3',
+        memberId: 'demo-member-4-3',
+        memberName: 'Eva',
+        weekOf: '2025-W47',
+        whatDidIDo: 'Completed design system foundations - color palette, typography scale, spacing tokens, and component library structure in Figma. Started on UI wireframes for main dashboard and task views.',
+        whatBlockedMe: 'Nothing significant. Smooth week overall.',
+        whatWillIDoNext: 'Finish wireframes for all major screens (10-12 screens total). Then start high-fidelity mockups with real content and interactions.',
+        createdAt: new Date(Date.now() - 21 * 24 * 60 * 60 * 1000).toISOString()
+      },
+      {
+        id: 'checkin-4-4',
+        memberId: 'demo-member-4-5',
+        memberName: 'Jarmo',
+        weekOf: '2025-W47',
+        whatDidIDo: 'Started project documentation. Set up Google Docs structure with sections for each phase. Documented our design thinking process and initial problem statement. Synthesized Arto\'s research findings into readable format.',
+        whatBlockedMe: 'Waiting for some team members to share their work artifacts. Hard to document without seeing the actual outputs.',
+        whatWillIDoNext: 'Continue building out documentation - add technical architecture diagrams from Andres, embed Figma prototypes from Eva, and document Getter\'s competitive analysis.',
+        createdAt: new Date(Date.now() - 21 * 24 * 60 * 60 * 1000).toISOString()
+      },
+
+      // Week 48 - 2 weeks ago  
+      {
+        id: 'checkin-4-5',
+        memberId: 'demo-member-4-1',
+        memberName: 'Andres',
+        weekOf: '2025-W48',
+        whatDidIDo: 'Made good progress on performance optimization. Added Firestore composite indexes, implemented query caching with 5-minute TTL, and used React.memo to prevent unnecessary re-renders. Reduced Firestore reads by 60% in testing!',
+        whatBlockedMe: 'Nothing major. Just normal debugging and optimization work.',
+        whatWillIDoNext: 'Continue performance work - add pagination for large task lists. Also need to start testing infrastructure setup with Playwright and Jest.',
+        createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString()
+      },
+      {
+        id: 'checkin-4-6',
+        memberId: 'demo-member-4-2',
+        memberName: 'Arto',
+        weekOf: '2025-W48',
+        whatDidIDo: 'Created 4 detailed user personas with photos, demographics, goals, frustrations, and tech literacy levels. Shared with team for feedback. Also started journey mapping for our primary persona "Sarah the Organizer".',
+        whatBlockedMe: 'Nothing this week.',
+        whatWillIDoNext: 'Finish journey maps for all 4 personas, covering their experience from project assignment through final grade. Identify key touchpoints and emotional highs/lows.',
+        createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString()
+      },
+      {
+        id: 'checkin-4-7',
+        memberId: 'demo-member-4-3',
+        memberName: 'Eva',
+        weekOf: '2025-W48',
+        whatDidIDo: 'Finished all wireframes (12 screens total). Started high-fidelity mockups using the design system components. Completed mockups for login, dashboard, and task list views. Added micro-interactions and hover states.',
+        whatBlockedMe: 'Some back-and-forth with team on color choices for contribution badges. Settled on traffic light system (green/yellow/red) for fairness indicators.',
+        whatWillIDoNext: 'Complete remaining high-fidelity mockups (6 more screens). Add responsive layouts for mobile. Prepare interactive prototype in Figma for usability testing.',
+        createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString()
+      },
+      {
+        id: 'checkin-4-8',
+        memberId: 'demo-member-4-4',
+        memberName: 'Getter',
+        weekOf: '2025-W48',
+        whatDidIDo: 'Completed comprehensive competitive analysis of 8 similar tools (Trello, Asana, Monday, Jira, plus 4 academic-specific tools). Created comparison matrix across 15 criteria. Key insight: nobody focuses specifically on fairness tracking.',
+        whatBlockedMe: 'Some tools required paid accounts to access full features. Had to use trial periods strategically.',
+        whatWillIDoNext: 'Write up strategic recommendations based on competitive analysis. Identify our unique value proposition and features that will differentiate us.',
+        createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString()
+      },
+
+      // Week 48 - Current week (1 person missing check-in as example)
+      {
+        id: 'checkin-4-9',
+        memberId: 'demo-member-4-1',
+        memberName: 'Andres',
+        weekOf: '2025-W48',
+        whatDidIDo: 'Set up Playwright for E2E testing. Created initial test suite covering login flow, group creation, and task management. Tests running in CI pipeline now. About 40% test coverage so far.',
+        whatBlockedMe: 'Nothing blocking.',
+        whatWillIDoNext: 'Expand test coverage to 80%+. Add tests for contribution tracking, fairness badges, and edge cases. Also need to add unit tests with Jest for utility functions.',
+        createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+      },
+      {
+        id: 'checkin-4-10',
+        memberId: 'demo-member-4-2',
+        memberName: 'Arto',
+        weekOf: '2025-W48',
+        whatDidIDo: 'Completed all 4 journey maps with detailed touchpoints, pain points, and emotional curves. Presented to team - great discussion about which pain points to prioritize. Consensus: focus on transparency and early intervention.',
+        whatBlockedMe: 'Nothing.',
+        whatWillIDoNext: 'Moving to synthesis phase - create "How Might We" statements from research findings. Prepare insights presentation for design workshop.',
+        createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+      },
+      {
+        id: 'checkin-4-11',
+        memberId: 'demo-member-4-3',
+        memberName: 'Eva',
+        weekOf: '2025-W48',
+        whatDidIDo: 'Finished all high-fidelity mockups including mobile responsive views. Created interactive Figma prototype with working navigation and transitions. Shared with team - everyone loves the visual direction! 🎨',
+        whatBlockedMe: 'Figma prototyping limitations for some advanced interactions. Decided to document those separately.',
+        whatWillIDoNext: 'Refine prototype based on team feedback. Prepare for usability testing sessions - create test scenarios and recruiting plan.',
+        createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+      },
+      // Note: Getter (demo-member-4-4) and Jarmo (demo-member-4-5) missing check-in for current week - will show in reminders
+    ],
+    meetings: [
+      // Past meeting
+      {
+        id: 'meeting-4-1',
+        title: 'Project Kickoff',
+        description: 'Initial project planning session. Review design thinking methodology, assign roles, and establish communication channels.',
+        date: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        startTime: '14:00',
+        endTime: '16:00',
+        location: 'University Library - Room 301',
+        attendees: ['demo-member-4-1', 'demo-member-4-2', 'demo-member-4-3', 'demo-member-4-4', 'demo-member-4-5'],
+        createdBy: 'Getter',
+        createdAt: new Date(Date.now() - 28 * 24 * 60 * 60 * 1000).toISOString()
+      },
+      // Past meeting
+      {
+        id: 'meeting-4-2',
+        title: 'Research Findings Review',
+        description: 'Arto presents user research insights from interviews. Team discussion on key pain points and persona development.',
+        date: new Date(Date.now() - 18 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        startTime: '13:00',
+        endTime: '14:30',
+        location: 'Zoom (link in Discord)',
+        attendees: ['demo-member-4-1', 'demo-member-4-2', 'demo-member-4-3', 'demo-member-4-4', 'demo-member-4-5'],
+        createdBy: 'Arto',
+        createdAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString()
+      },
+      // Past meeting
+      {
+        id: 'meeting-4-3',
+        title: 'Design System Walkthrough',
+        description: 'Eva demonstrates the design system, color palette, typography, and component library. Gather team feedback.',
+        date: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        startTime: '15:00',
+        endTime: '16:00',
+        location: 'Design Lab - Building B',
+        attendees: ['demo-member-4-1', 'demo-member-4-2', 'demo-member-4-3', 'demo-member-4-5'],
+        createdBy: 'Eva',
+        createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString()
+      },
+      // Past meeting
+      {
+        id: 'meeting-4-4',
+        title: 'Technical Architecture Discussion',
+        description: 'Andres walks through Firebase migration, database schema, and technical decisions. Q&A session.',
+        date: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        startTime: '10:00',
+        endTime: '11:30',
+        location: 'Computer Science Building - Room 205',
+        attendees: ['demo-member-4-1', 'demo-member-4-4', 'demo-member-4-5'],
+        createdBy: 'Andres',
+        createdAt: new Date(Date.now() - 11 * 24 * 60 * 60 * 1000).toISOString()
+      },
+      // Past meeting
+      {
+        id: 'meeting-4-5',
+        title: 'Mid-Project Check-in',
+        description: 'Progress review with all team members. Discuss blockers, adjust timeline, and coordinate next phase.',
+        date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        startTime: '16:00',
+        endTime: '17:30',
+        location: 'Student Center - Conference Room 2',
+        attendees: ['demo-member-4-1', 'demo-member-4-2', 'demo-member-4-3', 'demo-member-4-4', 'demo-member-4-5'],
+        createdBy: 'Getter',
+        createdAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString()
+      },
+      // Upcoming meeting - TODAY
+      {
+        id: 'meeting-4-6',
+        title: 'Usability Testing Planning',
+        description: 'Plan usability testing sessions - finalize test scenarios, recruiting strategy, and logistics. Bring prototype drafts.',
+        date: new Date().toISOString().split('T')[0],
+        startTime: '14:30',
+        endTime: '16:00',
+        location: 'Zoom (link: https://zoom.us/j/example)',
+        attendees: ['demo-member-4-2', 'demo-member-4-3', 'demo-member-4-5'],
+        createdBy: 'Arto',
+        createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString()
+      },
+      // Upcoming meeting - Tomorrow
+      {
+        id: 'meeting-4-7',
+        title: 'Sprint Review & Planning',
+        description: 'Review completed work, demo features, discuss feedback, and plan next sprint goals. All hands required!',
+        date: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        startTime: '13:00',
+        endTime: '15:00',
+        location: 'University Library - Room 301',
+        attendees: ['demo-member-4-1', 'demo-member-4-2', 'demo-member-4-3', 'demo-member-4-4', 'demo-member-4-5'],
+        createdBy: 'Getter',
+        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
+      },
+      // Upcoming meeting - 3 days
+      {
+        id: 'meeting-4-8',
+        title: 'Documentation Workshop',
+        description: 'Collaborative session to finalize project documentation. Bring all artifacts, screenshots, and diagrams.',
+        date: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        startTime: '10:00',
+        endTime: '12:00',
+        location: 'Library Study Room 4B',
+        attendees: ['demo-member-4-1', 'demo-member-4-2', 'demo-member-4-3', 'demo-member-4-5'],
+        createdBy: 'Jarmo',
+        createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString()
+      },
+      // Upcoming meeting - 1 week
+      {
+        id: 'meeting-4-9',
+        title: 'Final Presentation Rehearsal',
+        description: 'Practice run of final presentation. Timing, transitions, and feedback. Dress rehearsal for submission.',
+        date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        startTime: '15:00',
+        endTime: '17:00',
+        location: 'Auditorium - Main Campus',
+        attendees: ['demo-member-4-1', 'demo-member-4-2', 'demo-member-4-3', 'demo-member-4-4', 'demo-member-4-5'],
+        createdBy: 'Getter',
+        createdAt: new Date().toISOString()
+      }
+    ],
+    peerReviews: [
+      // Week 47 peer reviews (anonymous)
+      {
+        id: 'review-4-1',
+        reviewerId: 'anonymous-1',
+        reviewedMemberId: 'demo-member-4-1',
+        score: 5,
+        comment: 'Andres is crushing it on the technical side. Firebase migration was flawless and well-documented.',
+        createdAt: new Date(Date.now() - 21 * 24 * 60 * 60 * 1000).toISOString(),
+        weekOf: '2025-W47'
+      },
+      {
+        id: 'review-4-2',
+        reviewerId: 'anonymous-2',
+        reviewedMemberId: 'demo-member-4-2',
+        score: 5,
+        comment: 'Arto\'s research is incredibly thorough. The interview insights are gold.',
+        createdAt: new Date(Date.now() - 21 * 24 * 60 * 60 * 1000).toISOString(),
+        weekOf: '2025-W47'
+      },
+      {
+        id: 'review-4-3',
+        reviewerId: 'anonymous-3',
+        reviewedMemberId: 'demo-member-4-3',
+        score: 5,
+        comment: 'Eva\'s design work is beautiful and professional. The design system is really well organized.',
+        createdAt: new Date(Date.now() - 21 * 24 * 60 * 60 * 1000).toISOString(),
+        weekOf: '2025-W47'
+      },
+      {
+        id: 'review-4-4',
+        reviewerId: 'anonymous-4',
+        reviewedMemberId: 'demo-member-4-4',
+        score: 4,
+        comment: 'Getter provides great strategic guidance as our Sherpa. Could be more hands-on with implementation.',
+        createdAt: new Date(Date.now() - 21 * 24 * 60 * 60 * 1000).toISOString(),
+        weekOf: '2025-W47'
+      },
+      {
+        id: 'review-4-5',
+        reviewerId: 'anonymous-5',
+        reviewedMemberId: 'demo-member-4-5',
+        score: 4,
+        comment: 'Jarmo is doing solid documentation work. Sometimes needs reminders to update docs when things change.',
+        createdAt: new Date(Date.now() - 21 * 24 * 60 * 60 * 1000).toISOString(),
+        weekOf: '2025-W47'
+      },
+
+      // Week 48 peer reviews
+      {
+        id: 'review-4-6',
+        reviewerId: 'anonymous-6',
+        reviewedMemberId: 'demo-member-4-1',
+        score: 5,
+        comment: 'Performance optimizations are making a huge difference. App feels much snappier now!',
+        createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+        weekOf: '2025-W48'
+      },
+      {
+        id: 'review-4-7',
+        reviewerId: 'anonymous-7',
+        reviewedMemberId: 'demo-member-4-2',
+        score: 5,
+        comment: 'The personas are so realistic! Really helps us stay focused on user needs.',
+        createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+        weekOf: '2025-W48'
+      },
+      {
+        id: 'review-4-8',
+        reviewerId: 'anonymous-8',
+        reviewedMemberId: 'demo-member-4-3',
+        score: 5,
+        comment: 'Eva is consistently delivering high quality work. The mockups look production-ready.',
+        createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+        weekOf: '2025-W48'
+      },
+      {
+        id: 'review-4-9',
+        reviewerId: 'anonymous-9',
+        reviewedMemberId: 'demo-member-4-4',
+        score: 4,
+        comment: 'Competitive analysis was comprehensive and insightful. Great strategic thinking.',
+        createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+        weekOf: '2025-W48'
+      },
+      {
+        id: 'review-4-10',
+        reviewerId: 'anonymous-10',
+        reviewedMemberId: 'demo-member-4-5',
+        score: 4,
+        comment: 'Documentation is helpful and well-structured. Keep it updated as we iterate!',
+        createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+        weekOf: '2025-W48'
+      }
     ]
   }
 ]
@@ -547,6 +879,54 @@ async function seedFirebase() {
           console.log(`  Committing batch (${operationCount} operations)...`)
           await batch.commit()
           operationCount = 0
+        }
+      }
+
+      // Add check-ins if present
+      if (group.checkIns && group.checkIns.length > 0) {
+        console.log(`  Adding ${group.checkIns.length} check-ins...`)
+        for (const checkIn of group.checkIns) {
+          const checkInRef = db.collection('checkIns').doc(checkIn.id)
+          batch.set(checkInRef, { ...checkIn, groupId: group.id })
+          operationCount++
+
+          if (operationCount >= 450) {
+            console.log(`  Committing batch (${operationCount} operations)...`)
+            await batch.commit()
+            operationCount = 0
+          }
+        }
+      }
+
+      // Add peer reviews if present
+      if (group.peerReviews && group.peerReviews.length > 0) {
+        console.log(`  Adding ${group.peerReviews.length} peer reviews...`)
+        for (const review of group.peerReviews) {
+          const reviewRef = db.collection('peerReviews').doc(review.id)
+          batch.set(reviewRef, { ...review, groupId: group.id })
+          operationCount++
+
+          if (operationCount >= 450) {
+            console.log(`  Committing batch (${operationCount} operations)...`)
+            await batch.commit()
+            operationCount = 0
+          }
+        }
+      }
+
+      // Add meetings if present
+      if (group.meetings && group.meetings.length > 0) {
+        console.log(`  Adding ${group.meetings.length} meetings...`)
+        for (const meeting of group.meetings) {
+          const meetingRef = db.collection('meetings').doc(meeting.id)
+          batch.set(meetingRef, { ...meeting, groupId: group.id })
+          operationCount++
+
+          if (operationCount >= 450) {
+            console.log(`  Committing batch (${operationCount} operations)...`)
+            await batch.commit()
+            operationCount = 0
+          }
         }
       }
     }

@@ -12,13 +12,16 @@ import {
   orderBy,
 } from 'firebase/firestore'
 import { getFirebaseDb } from './config'
-import type { UserDoc, GroupDoc, MemberDoc, TaskDoc, GroupWithData } from './types'
+import type { UserDoc, GroupDoc, MemberDoc, TaskDoc, GroupWithData, CheckIn, PeerReview, Meeting } from './types'
 
 // Collection names
 const USERS_COLLECTION = 'users'
 const GROUPS_COLLECTION = 'groups'
 const MEMBERS_COLLECTION = 'members'
 const TASKS_COLLECTION = 'tasks'
+const CHECKINS_COLLECTION = 'checkIns'
+const PEER_REVIEWS_COLLECTION = 'peerReviews'
+const MEETINGS_COLLECTION = 'meetings'
 
 /**
  * Get all groups with their members and tasks
@@ -50,10 +53,37 @@ export async function getAllGroups(): Promise<GroupWithData[]> {
       const tasksSnap = await getDocs(tasksQuery)
       const tasks = tasksSnap.docs.map(d => d.data() as TaskDoc)
 
+      // Get check-ins for this group
+      const checkInsQuery = query(
+        collection(db, CHECKINS_COLLECTION),
+        where('groupId', '==', groupData.id)
+      )
+      const checkInsSnap = await getDocs(checkInsQuery)
+      const checkIns = checkInsSnap.docs.map(d => d.data() as CheckIn)
+
+      // Get peer reviews for this group
+      const peerReviewsQuery = query(
+        collection(db, PEER_REVIEWS_COLLECTION),
+        where('groupId', '==', groupData.id)
+      )
+      const peerReviewsSnap = await getDocs(peerReviewsQuery)
+      const peerReviews = peerReviewsSnap.docs.map(d => d.data() as PeerReview)
+
+      // Get meetings for this group
+      const meetingsQuery = query(
+        collection(db, MEETINGS_COLLECTION),
+        where('groupId', '==', groupData.id)
+      )
+      const meetingsSnap = await getDocs(meetingsQuery)
+      const meetings = meetingsSnap.docs.map(d => d.data() as Meeting)
+
       groups.push({
         ...groupData,
         members,
         tasks,
+        checkIns,
+        peerReviews,
+        meetings,
       })
     }
 
@@ -96,10 +126,37 @@ export async function getGroupById(groupId: string): Promise<GroupWithData | nul
     const tasksSnap = await getDocs(tasksQuery)
     const tasks = tasksSnap.docs.map(d => d.data() as TaskDoc)
 
+    // Get check-ins
+    const checkInsQuery = query(
+      collection(db, CHECKINS_COLLECTION),
+      where('groupId', '==', groupId)
+    )
+    const checkInsSnap = await getDocs(checkInsQuery)
+    const checkIns = checkInsSnap.docs.map(d => d.data() as CheckIn)
+
+    // Get peer reviews
+    const peerReviewsQuery = query(
+      collection(db, PEER_REVIEWS_COLLECTION),
+      where('groupId', '==', groupId)
+    )
+    const peerReviewsSnap = await getDocs(peerReviewsQuery)
+    const peerReviews = peerReviewsSnap.docs.map(d => d.data() as PeerReview)
+
+    // Get meetings
+    const meetingsQuery = query(
+      collection(db, MEETINGS_COLLECTION),
+      where('groupId', '==', groupId)
+    )
+    const meetingsSnap = await getDocs(meetingsQuery)
+    const meetings = meetingsSnap.docs.map(d => d.data() as Meeting)
+
     return {
       ...groupData,
       members,
       tasks,
+      checkIns,
+      peerReviews,
+      meetings,
     }
   } catch (error) {
     console.error('Error getting group:', error)

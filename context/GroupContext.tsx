@@ -14,7 +14,15 @@ import {
   deleteTask as dbDeleteTask,
   bulkInsertGroups,
 } from '@/lib/firebase/operations'
-import type { GroupWithData as DBGroup, MemberDoc as DBMember, TaskDoc as DBTask } from '@/lib/firebase/types'
+import type { 
+  GroupWithData as DBGroup, 
+  MemberDoc as DBMember, 
+  TaskDoc as DBTask,
+  CheckIn as DBCheckIn,
+  Badge as DBBadge,
+  PeerReview as DBPeerReview,
+  MemberRole
+} from '@/lib/firebase/types'
 
 export type Role = 'member' | 'sherpa'
 
@@ -27,6 +35,11 @@ export type Member = {
   hours: number
   tasks: number
   role?: Role
+  assignedRoles?: MemberRole[]
+  lastUpdateAt?: string
+  streakWeeks?: number
+  badges?: Badge[]
+  contributionScore?: number
 }
 
 export type WorkLog = {
@@ -35,6 +48,25 @@ export type WorkLog = {
   content: string
   createdAt: string
   hoursSpent?: number
+}
+
+export type CheckIn = DBCheckIn
+
+export type Badge = DBBadge
+
+export type PeerReview = DBPeerReview
+
+export type Meeting = {
+  id: string
+  title: string
+  description: string
+  date: string
+  startTime: string
+  endTime: string
+  location: string
+  attendees: string[]
+  createdBy: string
+  createdAt: string
 }
 
 export type Task = {
@@ -55,6 +87,9 @@ export type Group = {
   tasks: Task[]
   totalTasksNeeded: number
   projectLead?: string
+  checkIns?: CheckIn[]
+  peerReviews?: PeerReview[]
+  meetings?: Meeting[]
 }
 
 // Helper to convert DB types to app types
@@ -65,6 +100,11 @@ function convertFromDB(dbGroup: DBGroup): Group {
     hours: 0, // Will be calculated from tasks
     tasks: 0, // Will be calculated from tasks
     role: m.role,
+    assignedRoles: m.assignedRoles,
+    lastUpdateAt: m.lastUpdateAt,
+    streakWeeks: m.streakWeeks || 0,
+    badges: [],
+    contributionScore: 0,
   }))
 
   const tasks: Task[] = dbGroup.tasks.map(t => ({

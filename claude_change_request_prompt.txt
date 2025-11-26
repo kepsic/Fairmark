@@ -1,0 +1,52 @@
+CLAUDE SONNET CHANGE REQUEST PROMPT
+
+You are my senior product designer and systems architect.
+I will paste our CURRENT prototype/spec/requirements after this message.
+
+Your task: apply a targeted change request based strictly on four selected ideas extracted from our design workshop notes.
+Do NOT invent new ideas.
+Do NOT add concepts outside these four.
+You must refactor and extend the existing prototype according to these EXACT change items:
+
+1. Automated contribution tracking
+- add task/worklog system
+- add weekly progress updates
+- add reminders for missing updates
+- add peer-to-peer anonymous contribution scoring
+- generate a transparent “Contribution Score” per member
+- this score must later be usable for grading
+
+2. Clear role assignment + rotation
+- add roles (writer, presenter, coordinator, researcher, QA, designer, etc.)
+- allow assignment at project start
+- support role rotation between phases
+- ensure every member always has at least one active role
+- roles must be visible in UI and data model
+
+3. Weekly mini check-in flow
+- simple 3-question template:
+  1) What did I do?
+  2) What blocked me?
+  3) What will I do next?
+- check-ins update the contribution score
+- flag repeated non-participation
+- stored in timeline/history
+
+4. Positive gamification (no shaming)
+- add badges (reliable, clarity champion, on-time hero, etc.)
+- add streaks (weekly updates completed several weeks in a row)
+- add team-internal leaderboard
+- use gamification only as motivation, not punishment
+
+OUTPUT FORMAT
+
+Rewrite the current spec so that it fully includes the above changes, in this structure:
+1. Updated high-level concept (5 bullets)
+2. Updated feature list by user type
+3. Updated data model
+4. Updated core user flows
+5. Gamification logic
+6. Edge cases & fairness safeguards
+
+After this message, I will paste the current system or prototype.
+Apply the changes and output the upgraded version.

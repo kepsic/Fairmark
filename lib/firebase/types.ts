@@ -13,13 +13,18 @@ export type GroupDoc = {
   createdAt: string
 }
 
+export type MemberRole = 'member' | 'sherpa' | 'writer' | 'presenter' | 'coordinator' | 'researcher' | 'qa' | 'designer'
+
 export type MemberDoc = {
   id: string
   groupId: string
   name: string
   email: string
   role: 'member' | 'sherpa'
+  assignedRoles?: MemberRole[] // Support multiple functional roles
   joinedAt: string
+  lastUpdateAt?: string // Track last contribution
+  streakWeeks?: number // Weekly update streak
 }
 
 export type WorkLog = {
@@ -28,6 +33,47 @@ export type WorkLog = {
   content: string
   createdAt: string
   hoursSpent?: number
+}
+
+export type CheckIn = {
+  id: string
+  memberId: string
+  memberName: string
+  weekOf: string // ISO week string, e.g., '2025-W48'
+  whatDidIDo: string
+  whatBlockedMe: string
+  whatWillIDoNext: string
+  createdAt: string
+}
+
+export type Badge = {
+  id: string
+  type: 'reliable' | 'clarity-champion' | 'on-time-hero' | 'team-player' | 'innovator'
+  earnedAt: string
+  description: string
+}
+
+export type PeerReview = {
+  id: string
+  reviewerId: string // Anonymous reference
+  reviewedMemberId: string
+  score: number // 1-5 scale
+  comment?: string
+  createdAt: string
+  weekOf: string
+}
+
+export type Meeting = {
+  id: string
+  title: string
+  description: string
+  date: string
+  startTime: string
+  endTime: string
+  location: string
+  attendees: string[]
+  createdBy: string
+  createdAt: string
 }
 
 export type TaskDoc = {
@@ -48,4 +94,7 @@ export type TaskDoc = {
 export type GroupWithData = GroupDoc & {
   members: MemberDoc[]
   tasks: TaskDoc[]
+  checkIns?: CheckIn[]
+  peerReviews?: PeerReview[]
+  meetings?: Meeting[]
 }

@@ -25,6 +25,36 @@ function ContributionTable({ members, tasks = [], onMemberClick, selectedMemberI
     percentage: totalScore > 0 ? (member.score / totalScore) * 100 : 0
   }))
 
+  // Badge system based on contribution analysis
+  const avgTaskHours = membersWithPercentage.length > 0
+    ? membersWithPercentage.reduce((sum, m) => sum + m.taskHours, 0) / membersWithPercentage.length
+    : 0
+
+  // Heavy Lifter: Highest task hours (at least 25% above average)
+  const heavyLifter = membersWithPercentage.length > 0
+    ? membersWithPercentage.reduce((max, current) => 
+        current.taskHours > max.taskHours ? current : max
+      , membersWithPercentage[0])
+    : null
+
+  const isHeavyLifter = (memberId: string) => {
+    if (!heavyLifter || heavyLifter.taskHours === 0) return false
+    return heavyLifter.id === memberId && heavyLifter.taskHours >= avgTaskHours * 1.25
+  }
+
+  // Balanced Contributor: Within 10% of average (good team player)
+  const isBalancedContributor = (member: typeof membersWithPercentage[0]) => {
+    if (avgTaskHours === 0) return false
+    const deviation = Math.abs(member.taskHours - avgTaskHours) / avgTaskHours
+    return deviation <= 0.1 && member.taskHours > 0
+  }
+
+  // Needs Support: Significantly below average (less than 50% of average)
+  const needsSupport = (member: typeof membersWithPercentage[0]) => {
+    if (avgTaskHours === 0) return false
+    return member.taskHours > 0 && member.taskHours < avgTaskHours * 0.5
+  }
+
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-sm text-left" aria-label="Team member contributions">
@@ -56,14 +86,53 @@ function ContributionTable({ members, tasks = [], onMemberClick, selectedMemberI
                 } ${isClickable ? 'cursor-pointer' : ''} transition-colors`}
               >
                 <th scope="row" className="px-4 py-3 font-medium">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     {isSelected && (
                       <span className="text-blue-600 font-bold">→</span>
                     )}
                     <span>{member.name}</span>
+                    
+                    {/* Role Badge */}
                     {member.role === 'sherpa' && (
-                      <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
+                      <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded font-semibold">
                         Sherpa
+                      </span>
+                    )}
+                    
+                    {/* Performance Badges */}
+                    {isHeavyLifter(member.id) && (
+                      <span 
+                        className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded font-semibold flex items-center gap-1"
+                        title={`${member.name} is carrying the team with ${member.taskHours}h of work!`}
+                      >
+                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
+                        </svg>
+                        Heavy Lifter
+                      </span>
+                    )}
+                    
+                    {!isHeavyLifter(member.id) && isBalancedContributor(member) && (
+                      <span 
+                        className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded font-semibold flex items-center gap-1"
+                        title={`${member.name} is contributing evenly to the team`}
+                      >
+                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                        Balanced
+                      </span>
+                    )}
+                    
+                    {needsSupport(member) && (
+                      <span 
+                        className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded font-semibold flex items-center gap-1"
+                        title={`${member.name} might need support or more tasks`}
+                      >
+                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                        </svg>
+                        Needs Support
                       </span>
                     )}
                   </div>

@@ -22,7 +22,7 @@ function GanttChart({ tasks, members, onTaskClick }: GanttChartProps) {
 
   // Calculate critical path - tasks with highest hours per assignee
   const criticalPathData = useMemo(() => {
-    if (tasks.length === 0) return { criticalTaskIds: new Set<string>(), criticalHours: 0 }
+    if (tasks.length === 0) return { criticalTaskIds: new Set<string>(), criticalHours: 0, heavyLifterId: null }
 
     // Group tasks by assignee
     const tasksByAssignee = tasks.reduce((acc, task) => {
@@ -32,20 +32,30 @@ function GanttChart({ tasks, members, onTaskClick }: GanttChartProps) {
       return acc
     }, {} as Record<string, Task[]>)
 
-    // Calculate total hours per assignee
-    const assigneeHours = Object.entries(tasksByAssignee).map(([assignee, assigneeTasks]) => ({
-      assignee,
-      totalHours: assigneeTasks.reduce((sum, t) => sum + t.hours, 0),
-      tasks: assigneeTasks
-    }))
+    // Calculate total hours per assignee (include everyone except unassigned)
+    const assigneeHours = Object.entries(tasksByAssignee)
+      .map(([assignee, assigneeTasks]) => {
+        const member = members.find(m => m.id === assignee)
+        return {
+          assignee,
+          member,
+          totalHours: assigneeTasks.reduce((sum, t) => sum + t.hours, 0),
+          tasks: assigneeTasks
+        }
+      })
+      .filter(a => a.assignee !== 'unassigned')
 
-    // Critical path is the assignee with most hours (bottleneck)
-    const criticalAssignee = assigneeHours.reduce((max, current) => 
-      current.totalHours > max.totalHours ? current : max
-    , assigneeHours[0])
+    // Critical path is the assignee with most hours (bottleneck / heavy lifter)
+    const criticalAssignee = assigneeHours.length > 0 
+      ? assigneeHours.reduce((max, current) => 
+          current.totalHours > max.totalHours ? current : max
+        , assigneeHours[0])
+      : null
 
     // Mark tasks on critical path
-    const criticalTaskIds = new Set(criticalAssignee.tasks.map(t => t.id))
+    const criticalTaskIds = criticalAssignee 
+      ? new Set(criticalAssignee.tasks.map(t => t.id))
+      : new Set<string>()
     
     // Also include longest individual tasks (top 20% by hours)
     const sortedByHours = [...tasks].sort((a, b) => b.hours - a.hours)
@@ -54,8 +64,9 @@ function GanttChart({ tasks, members, onTaskClick }: GanttChartProps) {
 
     return {
       criticalTaskIds,
-      criticalHours: criticalAssignee.totalHours,
-      criticalAssignee: members.find(m => m.id === criticalAssignee.assignee)?.name || 'Unassigned'
+      criticalHours: criticalAssignee?.totalHours || 0,
+      criticalAssignee: criticalAssignee?.member?.name || 'Unassigned',
+      heavyLifterId: criticalAssignee?.assignee || null
     }
   }, [tasks, members])
 
@@ -115,7 +126,7 @@ function GanttChart({ tasks, members, onTaskClick }: GanttChartProps) {
             <div className="flex-1">
               <h4 className="text-sm font-semibold text-red-900 mb-1">Critical Path Detected</h4>
               <p className="text-xs text-red-700">
-                <strong>{criticalPathData.criticalAssignee}</strong> has the highest workload ({criticalPathData.criticalHours}h). 
+                <strong>{criticalPathData.criticalAssignee}</strong> is the <span className="font-semibold text-orange-700">Heavy Lifter</span> with the highest workload ({criticalPathData.criticalHours}h). 
                 Tasks on the critical path are highlighted with red borders and determine minimum project duration.
               </p>
             </div>
