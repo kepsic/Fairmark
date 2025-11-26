@@ -21,7 +21,7 @@ export default function Home() {
     if (currentUser) {
       router.replace('/groups')
     } else {
-      loadUsers()
+      router.replace('/login')
     }
   }, [router])
 

@@ -548,33 +548,36 @@ export function GroupProvider({ children }: { children: ReactNode }) {
         projectLead: 'Andres',
         tasks: [
           // Technical tasks for Andres
-          { id: 'task-4-1', title: 'RxDB Integration', description: 'Replace localStorage with RxDB database engine', assignedTo: 'demo-member-4-1', hours: 8, status: 'done' },
-          { id: 'task-4-2', title: 'Database Schema Design', description: 'Design schema for groups, members, and tasks', assignedTo: 'demo-member-4-1', hours: 6, status: 'done' },
-          { id: 'task-4-3', title: 'Context API Migration', description: 'Update GroupContext to use async database operations', assignedTo: 'demo-member-4-1', hours: 10, status: 'in-progress' },
-          { id: 'task-4-4', title: 'Performance Optimization', description: 'Optimize database queries and add indexes', assignedTo: 'demo-member-4-1', hours: 5, status: 'todo' },
-          { id: 'task-4-5', title: 'Testing Infrastructure', description: 'Set up unit and E2E tests', assignedTo: 'demo-member-4-1', hours: 7, status: 'todo' },
+          { id: 'task-4-1', title: 'Firebase Migration', description: 'Migrate from RxDB to Firebase Firestore for cloud-based real-time data synchronization. Implement Firestore SDK, set up collections for groups/members/tasks, and configure security rules.', assignedTo: 'demo-member-4-1', hours: 8, status: 'done' },
+          { id: 'task-4-2', title: 'Database Schema Design', description: 'Design normalized database schema with proper document structure for Firestore. Define TypeScript interfaces for type safety and establish relationships between collections using document references.', assignedTo: 'demo-member-4-1', hours: 6, status: 'done' },
+          { id: 'task-4-3', title: 'Context API Migration', description: 'Refactor GroupContext to use async Firebase operations instead of localStorage. Implement real-time listeners for data updates and handle loading/error states properly.', assignedTo: 'demo-member-4-1', hours: 10, status: 'in-progress' },
+          { id: 'task-4-4', title: 'Performance Optimization', description: 'Optimize Firestore queries using proper indexing, implement query pagination, and add caching strategies to reduce read operations and improve app responsiveness.', assignedTo: 'demo-member-4-1', hours: 5, status: 'todo' },
+          { id: 'task-4-5', title: 'Testing Infrastructure', description: 'Set up comprehensive testing suite with Playwright for E2E tests, Jest for unit tests. Create test scenarios for critical user flows and Firebase operations.', assignedTo: 'demo-member-4-1', hours: 7, status: 'todo' },
 
-          // Non-technical tasks for team members
-          { id: 'task-4-6', title: 'User Research Interviews', description: 'Conduct interviews with 5 students about group work challenges', assignedTo: 'demo-member-4-2', hours: 8, status: 'done' },
-          { id: 'task-4-7', title: 'Persona Development', description: 'Create user personas based on research findings', assignedTo: 'demo-member-4-2', hours: 5, status: 'done' },
-          { id: 'task-4-8', title: 'Journey Mapping', description: 'Map student journey through group project lifecycle', assignedTo: 'demo-member-4-2', hours: 6, status: 'in-progress' },
+          // Research tasks for Arto
+          { id: 'task-4-6', title: 'User Research Interviews', description: 'Conduct 10-15 in-depth interviews with university students from different programs about their group work experiences. Focus on pain points, fairness concerns, contribution tracking methods, and conflict resolution. Document findings with quotes and themes.', assignedTo: 'demo-member-4-2', hours: 8, status: 'done' },
+          { id: 'task-4-7', title: 'Persona Development', description: 'Create 3-4 detailed user personas representing different student archetypes (e.g., overworked contributor, free-rider, project coordinator). Include goals, frustrations, behaviors, and technology comfort levels.', assignedTo: 'demo-member-4-2', hours: 5, status: 'done' },
+          { id: 'task-4-8', title: 'Journey Mapping', description: 'Create comprehensive journey map showing student experience from group formation through project completion. Identify touchpoints, emotions, pain points, and opportunities for intervention at each stage.', assignedTo: 'demo-member-4-2', hours: 6, status: 'in-progress' },
 
-          { id: 'task-4-9', title: 'Design System Creation', description: 'Develop color palette and typography guidelines', assignedTo: 'demo-member-4-3', hours: 7, status: 'done' },
-          { id: 'task-4-10', title: 'UI Wireframes', description: 'Create low-fidelity wireframes for key screens', assignedTo: 'demo-member-4-3', hours: 8, status: 'done' },
-          { id: 'task-4-11', title: 'High-Fidelity Mockups', description: 'Design final UI mockups in Figma', assignedTo: 'demo-member-4-3', hours: 10, status: 'in-progress' },
+          // Design tasks for Eva
+          { id: 'task-4-9', title: 'Design System Creation', description: 'Develop comprehensive design system including color palette (primary, secondary, semantic colors), typography scale, spacing system, and component library. Create Figma library with reusable components following atomic design principles.', assignedTo: 'demo-member-4-3', hours: 7, status: 'done' },
+          { id: 'task-4-10', title: 'UI Wireframes', description: 'Create low-fidelity wireframes for all key screens: dashboard, project creation, task assignment, member management, and contribution tracking. Focus on information architecture and user flow without detailed visual design.', assignedTo: 'demo-member-4-3', hours: 8, status: 'done' },
+          { id: 'task-4-11', title: 'High-Fidelity Mockups', description: 'Design pixel-perfect UI mockups in Figma applying the design system. Include light/dark mode variants, responsive layouts for mobile/tablet/desktop, and interactive prototype with micro-interactions.', assignedTo: 'demo-member-4-3', hours: 10, status: 'in-progress' },
 
-          { id: 'task-4-12', title: 'Competitive Analysis', description: 'Research existing group work management tools', assignedTo: 'demo-member-4-4', hours: 6, status: 'done' },
-          { id: 'task-4-13', title: 'Feature Prioritization', description: 'Create feature priority matrix with stakeholders', assignedTo: 'demo-member-4-4', hours: 4, status: 'done' },
-          { id: 'task-4-14', title: 'Usability Testing Plan', description: 'Design usability test protocol and scenarios', assignedTo: 'demo-member-4-4', hours: 5, status: 'in-progress' },
+          // Strategy tasks for Getter (Sherpa)
+          { id: 'task-4-12', title: 'Competitive Analysis', description: 'Analyze 5-7 competing tools (Trello, Asana, Monday.com, Notion) focusing on task assignment, time tracking, and fairness features. Create comparison matrix with strengths, weaknesses, and differentiation opportunities.', assignedTo: 'demo-member-4-4', hours: 6, status: 'done' },
+          { id: 'task-4-13', title: 'Feature Prioritization', description: 'Facilitate prioritization workshop using MoSCoW method (Must have, Should have, Could have, Won\'t have). Create roadmap for MVP and future releases based on user value and development effort.', assignedTo: 'demo-member-4-4', hours: 4, status: 'done' },
+          { id: 'task-4-14', title: 'Usability Testing Plan', description: 'Design comprehensive usability testing protocol with 5-6 key scenarios covering task creation, assignment, and contribution tracking. Prepare screening questionnaire, test scripts, and success metrics.', assignedTo: 'demo-member-4-4', hours: 5, status: 'in-progress' },
 
-          { id: 'task-4-15', title: 'Project Documentation', description: 'Document design decisions and methodology', assignedTo: 'demo-member-4-5', hours: 7, status: 'done' },
-          { id: 'task-4-16', title: 'Stakeholder Presentations', description: 'Prepare and deliver progress presentations', assignedTo: 'demo-member-4-5', hours: 6, status: 'done' },
-          { id: 'task-4-17', title: 'Final Report Writing', description: 'Write comprehensive project report', assignedTo: 'demo-member-4-5', hours: 8, status: 'in-progress' },
+          // Documentation tasks for Jarmo
+          { id: 'task-4-15', title: 'Project Documentation', description: 'Create comprehensive documentation covering design thinking process, research findings, design decisions with rationale, technical architecture, and lessons learned. Include diagrams, screenshots, and data visualizations.', assignedTo: 'demo-member-4-5', hours: 7, status: 'done' },
+          { id: 'task-4-16', title: 'Stakeholder Presentations', description: 'Design and deliver bi-weekly progress presentations to course instructors and peers. Include demo videos, user feedback highlights, metrics, and next steps. Create visually engaging slides with clear narrative.', assignedTo: 'demo-member-4-5', hours: 6, status: 'done' },
+          { id: 'task-4-17', title: 'Final Report Writing', description: 'Write 25-30 page academic report following design thinking methodology. Cover problem definition, research phase, ideation, prototyping, testing, and final solution. Include appendices with raw data, interview transcripts, and test results.', assignedTo: 'demo-member-4-5', hours: 8, status: 'in-progress' },
 
           // Collaborative tasks
-          { id: 'task-4-18', title: 'Ideation Workshop', description: 'Facilitate brainstorming session for features', assignedTo: null, hours: 4, status: 'todo' },
-          { id: 'task-4-19', title: 'Usability Testing', description: 'Conduct usability tests with real users', assignedTo: null, hours: 6, status: 'todo' },
-          { id: 'task-4-20', title: 'Design Critique Session', description: 'Review designs and provide feedback', assignedTo: null, hours: 3, status: 'todo' },
+          { id: 'task-4-18', title: 'Ideation Workshop', description: 'Run collaborative ideation workshop using design thinking techniques (brainstorming, crazy 8s, affinity mapping). Generate 50+ feature ideas, cluster into themes, and vote on top concepts to prototype.', assignedTo: null, hours: 4, status: 'todo' },
+          { id: 'task-4-19', title: 'Usability Testing', description: 'Conduct moderated usability testing sessions with 8-10 university students. Test key workflows, measure task completion rates and time-on-task, collect qualitative feedback using think-aloud protocol. Synthesize findings into actionable recommendations.', assignedTo: null, hours: 6, status: 'todo' },
+          { id: 'task-4-20', title: 'Design Critique Session', description: 'Facilitate structured design critique following established frameworks. Present design rationale, gather constructive feedback from team and external reviewers, document suggestions, and prioritize improvements for next iteration.', assignedTo: null, hours: 3, status: 'todo' },
         ],
         members: [
           { id: 'demo-member-4-1', name: 'Andres', hours: 29, tasks: 15, role: 'member' },

@@ -14,6 +14,7 @@ export default function LoginPage() {
   const [isLoadingUsers, setIsLoadingUsers] = useState(true)
   const [showNewUserForm, setShowNewUserForm] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
+  const [selectedUserId, setSelectedUserId] = useState('')
   const router = useRouter()
   const { setCurrentUserName } = useGroups()
 
@@ -71,27 +72,30 @@ export default function LoginPage() {
           {!showNewUserForm && users.length > 0 && (
             <div className="mb-6">
               <h2 className="text-lg font-semibold mb-3 text-[#003A79]">Select Existing User</h2>
-              <div className="space-y-2">
-                {users.slice(0, 5).map((user) => (
-                  <button
-                    key={user.id}
-                    onClick={() => handleSelectUser(user.name)}
-                    className="w-full text-left px-4 py-2 border border-gray-200 rounded-md hover:bg-[#F5F5F5] hover:border-[#003A79] transition flex items-center justify-between group"
-                  >
-                    <div>
-                      <p className="font-medium text-[#003A79]">{user.name}</p>
-                      <p className="text-xs text-gray-500">{user.email}</p>
-                    </div>
-                    <svg 
-                      className="w-4 h-4 text-gray-400 group-hover:text-[#003A79] transition" 
-                      fill="none" 
-                      stroke="currentColor" 
-                      viewBox="0 0 24 24"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </button>
-                ))}
+              <div className="space-y-3">
+                <select
+                  value={selectedUserId}
+                  onChange={(e) => setSelectedUserId(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#003A79] focus:border-[#003A79]"
+                >
+                  <option value="">Choose a user...</option>
+                  {users.map((user) => (
+                    <option key={user.id} value={user.id}>
+                      {user.name} ({user.email})
+                    </option>
+                  ))}
+                </select>
+                
+                <button
+                  onClick={() => {
+                    const user = users.find(u => u.id === selectedUserId)
+                    if (user) handleSelectUser(user.name)
+                  }}
+                  disabled={!selectedUserId}
+                  className="w-full bg-[#D4A017] text-white font-semibold px-6 py-3 rounded-md hover:bg-[#b58912] transition disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Continue as Selected User
+                </button>
               </div>
               {!showNewUserForm && (
                 <button
