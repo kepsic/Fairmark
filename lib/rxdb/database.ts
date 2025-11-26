@@ -80,6 +80,7 @@ const groupSchema = {
     createdAt: {
       type: 'string',
       format: 'date-time',
+      maxLength: 50, // ISO date strings are ~24 chars, 50 is safe
     },
   },
   required: ['id', 'name', 'description', 'createdAt'],
@@ -99,12 +100,14 @@ const memberSchema = {
     groupId: {
       type: 'string',
       ref: 'groups',
+      maxLength: 100,
     },
     name: {
       type: 'string',
     },
     email: {
       type: 'string',
+      maxLength: 100,
     },
     role: {
       type: 'string',
@@ -113,6 +116,7 @@ const memberSchema = {
     joinedAt: {
       type: 'string',
       format: 'date-time',
+      maxLength: 50,
     },
   },
   required: ['id', 'groupId', 'name', 'email', 'role', 'joinedAt'],
@@ -132,6 +136,7 @@ const taskSchema = {
     groupId: {
       type: 'string',
       ref: 'groups',
+      maxLength: 100,
     },
     title: {
       type: 'string',
@@ -141,10 +146,12 @@ const taskSchema = {
     },
     assignedTo: {
       type: ['string', 'null'],
+      maxLength: 100,
     },
     status: {
       type: 'string',
       enum: ['todo', 'in-progress', 'done'],
+      maxLength: 20,
     },
     estimatedHours: {
       type: 'number',
@@ -155,10 +162,12 @@ const taskSchema = {
     createdAt: {
       type: 'string',
       format: 'date-time',
+      maxLength: 50,
     },
     updatedAt: {
       type: 'string',
       format: 'date-time',
+      maxLength: 50,
     },
   },
   required: [
