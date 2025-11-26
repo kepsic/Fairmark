@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useGroups, TaskStatus } from '@/context/GroupContext'
+import { addWorkLog } from '@/lib/firebase/operations'
 
 export default function TaskDetailPage({ params }: { params: { id: string; taskId: string } }) {
   const router = useRouter()
@@ -12,6 +13,9 @@ export default function TaskDetailPage({ params }: { params: { id: string; taskI
   const task = getTask(params.id, params.taskId)
 
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [newLogContent, setNewLogContent] = useState('')
+  const [newLogHours, setNewLogHours] = useState('')
+  const [isAddingLog, setIsAddingLog] = useState(false)
 
   useEffect(() => {
     if (!currentUserName) {
@@ -30,6 +34,26 @@ export default function TaskDetailPage({ params }: { params: { id: string; taskI
   const handleDelete = async () => {
     await deleteTask(params.id, params.taskId)
     router.push(`/group/${params.id}`)
+  }
+
+  const handleAddWorkLog = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!newLogContent.trim() || !currentUserName) return
+
+    setIsAddingLog(true)
+    try {
+      const hours = newLogHours ? parseFloat(newLogHours) : undefined
+      await addWorkLog(params.taskId, currentUserName, newLogContent.trim(), hours)
+      setNewLogContent('')
+      setNewLogHours('')
+      // Reload the page to show the new log
+      window.location.reload()
+    } catch (error) {
+      console.error('Error adding work log:', error)
+      alert('Failed to add work log')
+    } finally {
+      setIsAddingLog(false)
+    }
   }
 
   if (!currentUserName) {
@@ -180,6 +204,83 @@ export default function TaskDetailPage({ params }: { params: { id: string; taskI
               >
                 Done
               </button>
+            </div>
+          </div>
+
+          {/* Work Log Section */}
+          <div className="mb-6">
+            <h2 className="text-lg font-semibold mb-3">Work Log</h2>
+            
+            {/* Add Work Log Form */}
+            <form onSubmit={handleAddWorkLog} className="mb-4 p-4 bg-gray-50 rounded-lg">
+              <textarea
+                value={newLogContent}
+                onChange={(e) => setNewLogContent(e.target.value)}
+                placeholder="What did you work on? Any blockers? Implementation details..."
+                className="w-full px-3 py-2 border border-gray-300 rounded-md mb-3 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                disabled={isAddingLog}
+              />
+              <div className="flex gap-3 items-end">
+                <div className="flex-1">
+                  <label htmlFor="hours" className="block text-sm text-gray-600 mb-1">
+                    Hours Spent (optional)
+                  </label>
+                  <input
+                    id="hours"
+                    type="number"
+                    step="0.5"
+                    min="0"
+                    value={newLogHours}
+                    onChange={(e) => setNewLogHours(e.target.value)}
+                    placeholder="2.5"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    disabled={isAddingLog}
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={isAddingLog || !newLogContent.trim()}
+                  className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isAddingLog ? 'Adding...' : 'Add Log'}
+                </button>
+              </div>
+            </form>
+
+            {/* Work Log Entries */}
+            <div className="space-y-3">
+              {task.workLogs && task.workLogs.length > 0 ? (
+                [...task.workLogs]
+                  .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                  .map((log) => (
+                    <div key={log.id} className="border border-gray-200 rounded-lg p-4 bg-white">
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold text-gray-900">{log.author}</span>
+                          {log.hoursSpent !== undefined && (
+                            <span className="text-sm bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
+                              {log.hoursSpent}h
+                            </span>
+                          )}
+                        </div>
+                        <span className="text-sm text-gray-500">
+                          {new Date(log.createdAt).toLocaleString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </span>
+                      </div>
+                      <p className="text-gray-700 whitespace-pre-wrap">{log.content}</p>
+                    </div>
+                  ))
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  <p>No work logs yet. Add your first log above!</p>
+                </div>
+              )}
             </div>
           </div>
 

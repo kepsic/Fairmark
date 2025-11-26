@@ -29,6 +29,14 @@ export type Member = {
   role?: Role
 }
 
+export type WorkLog = {
+  id: string
+  author: string
+  content: string
+  createdAt: string
+  hoursSpent?: number
+}
+
 export type Task = {
   id: string
   title: string
@@ -36,6 +44,7 @@ export type Task = {
   assignedTo: string | null
   hours: number
   status: TaskStatus
+  workLogs?: WorkLog[]
 }
 
 export type Group = {

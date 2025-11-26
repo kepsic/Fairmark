@@ -267,6 +267,48 @@ export async function deleteTask(taskId: string): Promise<void> {
 }
 
 /**
+ * Add a work log to a task
+ */
+export async function addWorkLog(
+  taskId: string,
+  author: string,
+  content: string,
+  hoursSpent?: number
+): Promise<void> {
+  const db = getFirebaseDb()
+
+  try {
+    const taskDocRef = doc(db, TASKS_COLLECTION, taskId)
+    const taskSnap = await getDoc(taskDocRef)
+
+    if (!taskSnap.exists()) {
+      throw new Error('Task not found')
+    }
+
+    const task = taskSnap.data() as TaskDoc
+    const workLogs = task.workLogs || []
+
+    const newWorkLog = {
+      id: `log-${Date.now()}`,
+      author,
+      content,
+      createdAt: new Date().toISOString(),
+      ...(hoursSpent !== undefined && { hoursSpent }),
+    }
+
+    workLogs.push(newWorkLog)
+
+    await updateDoc(taskDocRef, {
+      workLogs,
+      updatedAt: new Date().toISOString(),
+    })
+  } catch (error) {
+    console.error('Error adding work log:', error)
+    throw error
+  }
+}
+
+/**
  * Bulk insert multiple groups with their members and tasks
  */
 export async function bulkInsertGroups(groups: GroupWithData[]): Promise<void> {

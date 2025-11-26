@@ -101,7 +101,48 @@ const demoGroups = [
     ],
     tasks: [
       // Technical tasks for Andres
-      { id: 'task-4-1', groupId: 'demo-group-4', title: 'Firebase Migration', description: 'Migrate from RxDB to Firebase Firestore for cloud-based real-time data synchronization. Implement Firestore SDK, set up collections for groups/members/tasks, and configure security rules.', assignedTo: 'demo-member-4-1', status: 'done', estimatedHours: 8, actualHours: 8, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+      { 
+        id: 'task-4-1', 
+        groupId: 'demo-group-4', 
+        title: 'Firebase Migration', 
+        description: 'Migrate from RxDB to Firebase Firestore for cloud-based real-time data synchronization. Implement Firestore SDK, set up collections for groups/members/tasks, and configure security rules.', 
+        assignedTo: 'demo-member-4-1', 
+        status: 'done', 
+        estimatedHours: 8, 
+        actualHours: 8, 
+        createdAt: new Date().toISOString(), 
+        updatedAt: new Date().toISOString(),
+        workLogs: [
+          {
+            id: 'log-1',
+            author: 'Andres',
+            content: 'Set up Firebase project in console. Created firestore database and configured authentication. Generated service account key for admin SDK.\n\nImplementation:\n- Installed firebase and firebase-admin packages\n- Created lib/firebase/config.ts for initialization\n- Added environment variables to .env.local\n\nNo blockers so far.',
+            createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+            hoursSpent: 2
+          },
+          {
+            id: 'log-2',
+            author: 'Andres',
+            content: 'Created Firestore collections structure:\n- groups (id, name, description, createdAt)\n- members (id, groupId, name, email, role, joinedAt)\n- tasks (id, groupId, title, description, assignedTo, status, estimatedHours, actualHours)\n\nSet up TypeScript types in lib/firebase/types.ts. All properly typed with interfaces.\n\nChallenge: Decided on denormalized structure vs. subcollections. Went with top-level collections for easier querying.',
+            createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+            hoursSpent: 3
+          },
+          {
+            id: 'log-3',
+            author: 'Andres',
+            content: 'Implemented CRUD operations in lib/firebase/operations.ts:\n✅ getAllGroups() with members and tasks\n✅ getGroupById()\n✅ createGroup(), updateGroup(), deleteGroup()\n✅ createTask(), updateTask(), deleteTask()\n✅ Bulk insert for demo data seeding\n\nAll operations use proper error handling and TypeScript types.',
+            createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+            hoursSpent: 2.5
+          },
+          {
+            id: 'log-4',
+            author: 'Andres',
+            content: 'Configured Firestore security rules:\n- Read/write access for authenticated users\n- Document-level rules for data validation\n- Rate limiting considerations\n\nTested all operations with seed data. Migration complete and working! 🎉\n\nNext: Update GroupContext to use Firebase operations instead of localStorage.',
+            createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+            hoursSpent: 0.5
+          }
+        ]
+      },
       { id: 'task-4-2', groupId: 'demo-group-4', title: 'Database Schema Design', description: 'Design normalized database schema with proper document structure for Firestore. Define TypeScript interfaces for type safety and establish relationships between collections using document references.', assignedTo: 'demo-member-4-1', status: 'done', estimatedHours: 5, actualHours: 5, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
       { id: 'task-4-3', groupId: 'demo-group-4', title: 'Context API Migration', description: 'Refactor GroupContext to use async Firebase operations instead of localStorage. Implement real-time listeners for data updates and handle loading/error states properly.', assignedTo: 'demo-member-4-1', status: 'done', estimatedHours: 6, actualHours: 6, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
       { id: 'task-4-4', groupId: 'demo-group-4', title: 'Performance Optimization', description: 'Optimize Firestore queries using proper indexing, implement query pagination, and add caching strategies to reduce read operations and improve app responsiveness.', assignedTo: 'demo-member-4-1', status: 'in-progress', estimatedHours: 7, actualHours: 0, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
@@ -114,7 +155,48 @@ const demoGroups = [
 
       // Design tasks for Eva
       { id: 'task-4-9', groupId: 'demo-group-4', title: 'Design System Creation', description: 'Develop comprehensive design system including color palette (primary, secondary, semantic colors), typography scale, spacing system, and component library. Create Figma library with reusable components following atomic design principles.', assignedTo: 'demo-member-4-3', status: 'done', estimatedHours: 7, actualHours: 7, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-      { id: 'task-4-10', groupId: 'demo-group-4', title: 'UI Wireframes', description: 'Create low-fidelity wireframes for all key screens: dashboard, project creation, task assignment, member management, and contribution tracking. Focus on information architecture and user flow without detailed visual design.', assignedTo: 'demo-member-4-3', status: 'done', estimatedHours: 8, actualHours: 8, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+      { 
+        id: 'task-4-10', 
+        groupId: 'demo-group-4', 
+        title: 'UI Wireframes', 
+        description: 'Create low-fidelity wireframes for all key screens: dashboard, project creation, task assignment, member management, and contribution tracking. Focus on information architecture and user flow without detailed visual design.', 
+        assignedTo: 'demo-member-4-3', 
+        status: 'done', 
+        estimatedHours: 8, 
+        actualHours: 8, 
+        createdAt: new Date().toISOString(), 
+        updatedAt: new Date().toISOString(),
+        workLogs: [
+          {
+            id: 'log-1',
+            author: 'Eva',
+            content: 'Started with user flow mapping. Created flows for:\n- New user onboarding\n- Creating a new project\n- Adding tasks and assigning to members\n- Viewing contribution dashboard\n\nUsed Figma FigJam for the flow diagrams.',
+            createdAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
+            hoursSpent: 2
+          },
+          {
+            id: 'log-2',
+            author: 'Eva',
+            content: 'Completed wireframes for main screens:\n✅ Landing page\n✅ Login/signup\n✅ Project list dashboard\n✅ Project detail view\n✅ Task creation form\n\nFocused on mobile-first approach. All wireframes are lo-fi grayscale boxes and text.',
+            createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+            hoursSpent: 3
+          },
+          {
+            id: 'log-3',
+            author: 'Eva',
+            content: 'Created wireframes for member management and contribution tracking:\n- Member list with hours worked\n- Task assignment interface\n- Fairness visualization (chart wireframe)\n- Sherpa role indicators\n\nGot feedback from Getter on information hierarchy. Will adjust spacing in next iteration.',
+            createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+            hoursSpent: 2.5
+          },
+          {
+            id: 'log-4',
+            author: 'Eva',
+            content: 'Final review and refinements:\n- Added annotations for interactions (click, hover states)\n- Created component library in Figma for reusable elements\n- Documented responsive breakpoints\n- Shared with team for review\n\nAll 15 core screens are complete. Ready to move to high-fidelity mockups!',
+            createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+            hoursSpent: 0.5
+          }
+        ]
+      },
       { id: 'task-4-11', groupId: 'demo-group-4', title: 'High-Fidelity Mockups', description: 'Design pixel-perfect UI mockups in Figma applying the design system. Include light/dark mode variants, responsive layouts for mobile/tablet/desktop, and interactive prototype with micro-interactions.', assignedTo: 'demo-member-4-3', status: 'in-progress', estimatedHours: 10, actualHours: 0, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
 
       // Strategy tasks for Getter (Sherpa)

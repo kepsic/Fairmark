@@ -22,6 +22,14 @@ export type MemberDoc = {
   joinedAt: string
 }
 
+export type WorkLog = {
+  id: string
+  author: string
+  content: string
+  createdAt: string
+  hoursSpent?: number
+}
+
 export type TaskDoc = {
   id: string
   groupId: string
@@ -33,6 +41,7 @@ export type TaskDoc = {
   actualHours: number
   createdAt: string
   updatedAt: string
+  workLogs?: WorkLog[]
 }
 
 // Combined group with members and tasks
