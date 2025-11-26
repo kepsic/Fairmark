@@ -19,16 +19,16 @@ export default function TaskDetailPage({ params }: { params: { id: string; taskI
     }
   }, [currentUserName, router])
 
-  const handleAssign = (memberId: string | null) => {
-    assignTask(params.id, params.taskId, memberId)
+  const handleAssign = async (memberId: string | null) => {
+    await assignTask(params.id, params.taskId, memberId)
   }
 
-  const handleStatusChange = (status: TaskStatus) => {
-    updateTaskStatus(params.id, params.taskId, status)
+  const handleStatusChange = async (status: TaskStatus) => {
+    await updateTaskStatus(params.id, params.taskId, status)
   }
 
-  const handleDelete = () => {
-    deleteTask(params.id, params.taskId)
+  const handleDelete = async () => {
+    await deleteTask(params.id, params.taskId)
     router.push(`/group/${params.id}`)
   }
 

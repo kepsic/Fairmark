@@ -18,11 +18,11 @@ export default function AddMemberPage({ params }: { params: { id: string } }) {
     }
   }, [currentUserName, router])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
     if (memberName.trim()) {
-      addMember(params.id, memberName.trim())
+      await addMember(params.id, memberName.trim())
       router.push(`/group/${params.id}`)
     }
   }

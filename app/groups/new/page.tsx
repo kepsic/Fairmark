@@ -19,7 +19,7 @@ export default function NewGroupPage() {
     }
   }, [currentUserName, router])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setErrors({})
     
@@ -39,7 +39,7 @@ export default function NewGroupPage() {
       return
     }
     
-    const groupId = createGroup(
+    const groupId = await createGroup(
       nameValidation.sanitized,
       descValidation.sanitized || undefined
     )

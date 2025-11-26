@@ -18,12 +18,12 @@ export default function JoinGroupPage() {
     }
   }, [currentUserName, router])
 
-  const handleJoinById = (e: React.FormEvent) => {
+  const handleJoinById = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
     
     if (groupId.trim()) {
-      const success = joinGroup(groupId.trim(), currentUserName!)
+      const success = await joinGroup(groupId.trim(), currentUserName!)
       if (success) {
         router.push(`/group/${groupId.trim()}`)
       } else {
@@ -32,8 +32,8 @@ export default function JoinGroupPage() {
     }
   }
 
-  const handleJoinFromList = (id: string) => {
-    joinGroup(id, currentUserName!)
+  const handleJoinFromList = async (id: string) => {
+    await joinGroup(id, currentUserName!)
     router.push(`/group/${id}`)
   }
 

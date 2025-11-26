@@ -25,8 +25,8 @@ export default function LoginPage() {
     router.push('/groups')
   }
 
-  const handleLoadDemo = () => {
-    loadDemoData()
+  const handleLoadDemo = async () => {
+    await loadDemoData()
     router.push('/groups')
   }
 
@@ -90,8 +90,8 @@ export default function LoginPage() {
               Load Demo Data
             </button>
             <button
-              onClick={() => {
-                loadCanvasMockData()
+              onClick={async () => {
+                await loadCanvasMockData()
                 router.push('/groups')
               }}
               type="button"

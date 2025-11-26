@@ -88,8 +88,8 @@ export default function GroupDashboard({ params }: { params: { id: string } }) {
             <h2 className="text-lg font-semibold text-[#003A79]">Project Tasks</h2>
             <div className="flex gap-2">
               <button
-                onClick={() => {
-                  const assigned = autoAssignTasks(params.id)
+                onClick={async () => {
+                  const assigned = await autoAssignTasks(params.id)
                   if (assigned > 0) {
                     alert(`Auto-assigned ${assigned} unassigned tasks to team members.`)
                   } else {

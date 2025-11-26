@@ -1,9 +1,25 @@
 'use client'
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import {
+  getAllGroups,
+  createGroup as dbCreateGroup,
+  updateGroup as dbUpdateGroup,
+  addMember as dbAddMember,
+  updateMember as dbUpdateMember,
+  removeMember as dbRemoveMember,
+  addTask as dbAddTask,
+  updateTask as dbUpdateTask,
+  deleteTask as dbDeleteTask,
+  bulkInsertGroups,
+} from '@/lib/rxdb/operations'
+import type { Group as DBGroup, Member as DBMember, Task as DBTask } from '@/lib/rxdb/schema'
 
 export type Role = 'member' | 'sherpa'
 
+export type TaskStatus = 'todo' | 'in-progress' | 'done'
+
+// Application-level types that match the UI expectations
 export type Member = {
   id: string
   name: string
@@ -11,8 +27,6 @@ export type Member = {
   tasks: number
   role?: Role
 }
-
-export type TaskStatus = 'todo' | 'in-progress' | 'done'
 
 export type Task = {
   id: string
@@ -33,25 +47,98 @@ export type Group = {
   projectLead?: string
 }
 
+// Helper to convert DB types to app types
+function convertFromDB(dbGroup: DBGroup): Group {
+  const members: Member[] = dbGroup.members.map(m => ({
+    id: m.id,
+    name: m.name,
+    hours: 0, // Will be calculated from tasks
+    tasks: 0, // Will be calculated from tasks
+    role: m.role,
+  }))
+
+  const tasks: Task[] = dbGroup.tasks.map(t => ({
+    id: t.id,
+    title: t.title,
+    description: t.description,
+    assignedTo: t.assignedTo,
+    hours: t.estimatedHours,
+    status: t.status,
+  }))
+
+  // Calculate hours and task counts for each member
+  members.forEach(member => {
+    const memberTasks = tasks.filter(t => t.assignedTo === member.id)
+    member.tasks = memberTasks.length
+    member.hours = memberTasks.reduce((sum, t) => sum + t.hours, 0)
+  })
+
+  // Try to extract additional metadata from description or use defaults
+  const totalTasksNeeded = 50 // Default
+  const projectLead = members[0]?.name // First member as default
+
+  return {
+    id: dbGroup.id,
+    name: dbGroup.name,
+    description: dbGroup.description,
+    members,
+    tasks,
+    totalTasksNeeded,
+    projectLead,
+  }
+}
+
+// Helper to convert app Group to DB Group
+function convertToDB(group: Group): DBGroup {
+  const now = new Date().toISOString()
+  
+  return {
+    id: group.id,
+    name: group.name,
+    description: group.description || '',
+    createdAt: now,
+    members: group.members.map(m => ({
+      id: m.id,
+      groupId: group.id,
+      name: m.name,
+      email: `${m.name.toLowerCase().replace(' ', '.')}@example.com`,
+      role: m.role || 'member',
+      joinedAt: now,
+    })),
+    tasks: group.tasks.map(t => ({
+      id: t.id,
+      groupId: group.id,
+      title: t.title,
+      description: t.description,
+      assignedTo: t.assignedTo,
+      status: t.status,
+      estimatedHours: t.hours,
+      actualHours: t.status === 'done' ? t.hours : 0,
+      createdAt: now,
+      updatedAt: now,
+    })),
+  }
+}
+
 type GroupContextType = {
   groups: Group[]
   currentUserName: string | null
   setCurrentUserName: (name: string | null) => void
-  createGroup: (name: string, description?: string) => string
+  createGroup: (name: string, description?: string) => Promise<string>
   getGroup: (id: string) => Group | undefined
-  joinGroup: (groupId: string, userName: string) => boolean
-  addMember: (groupId: string, memberName: string, role?: Role) => void
-  updateMemberContribution: (groupId: string, memberId: string, hours: number, tasks: number) => void
-  updateGroupSettings: (groupId: string, name: string, description: string, totalTasksNeeded: number) => void
-  loadDemoData: () => void
+  joinGroup: (groupId: string, userName: string) => Promise<boolean>
+  addMember: (groupId: string, memberName: string, role?: Role) => Promise<void>
+  updateMemberContribution: (groupId: string, memberId: string, hours: number, tasks: number) => Promise<void>
+  updateGroupSettings: (groupId: string, name: string, description: string, totalTasksNeeded: number) => Promise<void>
+  loadDemoData: () => Promise<void>
   // Task management
-  createTask: (groupId: string, title: string, description: string, hours: number) => string
-  assignTask: (groupId: string, taskId: string, memberId: string | null) => void
-  updateTaskStatus: (groupId: string, taskId: string, status: TaskStatus) => void
+  createTask: (groupId: string, title: string, description: string, hours: number) => Promise<string>
+  assignTask: (groupId: string, taskId: string, memberId: string | null) => Promise<void>
+  updateTaskStatus: (groupId: string, taskId: string, status: TaskStatus) => Promise<void>
   getTask: (groupId: string, taskId: string) => Task | undefined
-  deleteTask: (groupId: string, taskId: string) => void
-  autoAssignTasks: (groupId: string) => number
-  loadCanvasMockData: () => void
+  deleteTask: (groupId: string, taskId: string) => Promise<void>
+  autoAssignTasks: (groupId: string) => Promise<number>
+  loadCanvasMockData: () => Promise<void>
 }
 
 const GroupContext = createContext<GroupContextType | undefined>(undefined)
@@ -60,52 +147,44 @@ export function GroupProvider({ children }: { children: ReactNode }) {
   const [groups, setGroups] = useState<Group[]>([])
   const [currentUserName, setCurrentUserNameState] = useState<string | null>(null)
   const [isClient, setIsClient] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
-  // Load data from localStorage on mount
+  // Load data from RxDB on mount
   useEffect(() => {
     setIsClient(true)
-    try {
-      const storedGroups = localStorage.getItem('fairGroupworkGroups')
-      const storedUserName = localStorage.getItem('currentUserName')
-      
-      if (storedGroups) {
-        try {
-          const parsed = JSON.parse(storedGroups)
-          // Validate that parsed data is an array
-          if (Array.isArray(parsed)) {
-            setGroups(parsed)
-          } else {
-            console.warn('Invalid groups data in localStorage, resetting')
-            localStorage.removeItem('fairGroupworkGroups')
-          }
-        } catch (e) {
-          console.error('Error parsing groups from localStorage', e)
-          localStorage.removeItem('fairGroupworkGroups')
+    
+    async function loadData() {
+      try {
+        // Load user name from localStorage (lightweight data)
+        const storedUserName = localStorage.getItem('currentUserName')
+        if (storedUserName) {
+          setCurrentUserNameState(storedUserName)
         }
+
+        // Load groups from RxDB
+        const dbGroups = await getAllGroups()
+        const convertedGroups = dbGroups.map(convertFromDB)
+        setGroups(convertedGroups)
+        console.log(`Loaded ${convertedGroups.length} groups from RxDB`)
+      } catch (e) {
+        console.error('Error loading data from RxDB', e)
+      } finally {
+        setIsLoading(false)
       }
-      
-      if (storedUserName) {
-        setCurrentUserNameState(storedUserName)
-      }
-    } catch (e) {
-      console.error('Error accessing localStorage', e)
     }
+
+    loadData()
   }, [])
 
-  // Save groups to localStorage whenever they change
-  useEffect(() => {
-    if (isClient && groups.length >= 0) {
-      try {
-        localStorage.setItem('fairGroupworkGroups', JSON.stringify(groups))
-      } catch (e) {
-        console.error('Error saving groups to localStorage', e)
-        // Handle quota exceeded error
-        if (e instanceof DOMException && e.name === 'QuotaExceededError') {
-          alert('Storage quota exceeded. Please clear some data.')
-        }
-      }
+  // Helper to refresh groups from database
+  const refreshGroups = async () => {
+    try {
+      const dbGroups = await getAllGroups()
+      setGroups(dbGroups.map(convertFromDB))
+    } catch (e) {
+      console.error('Error refreshing groups', e)
     }
-  }, [groups, isClient])
+  }
 
   const setCurrentUserName = (name: string | null) => {
     setCurrentUserNameState(name)
@@ -116,202 +195,166 @@ export function GroupProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  const createGroup = (name: string, description?: string): string => {
+  const createGroup = async (name: string, description?: string): Promise<string> => {
     const groupId = crypto.randomUUID()
     const memberId = crypto.randomUUID()
     
-    const newGroup: Group = {
-      id: groupId,
-      name,
-      description,
-      members: [
-        {
-          id: memberId,
-          name: currentUserName || 'Unknown',
-          hours: 0,
-          tasks: 0,
-          role: 'member',
-        }
-      ],
-      tasks: [],
-      totalTasksNeeded: 10, // Default value
-      projectLead: currentUserName || undefined,
+    try {
+      // Create group in database
+      await dbCreateGroup({
+        id: groupId,
+        name,
+        description: description || '',
+        createdAt: new Date().toISOString(),
+      })
+
+      // Add creator as first member
+      await dbAddMember({
+        id: memberId,
+        groupId,
+        name: currentUserName || 'Unknown',
+        email: `${currentUserName?.toLowerCase().replace(' ', '.')}@example.com` || 'unknown@example.com',
+        role: 'member',
+        joinedAt: new Date().toISOString(),
+      })
+
+      // Refresh groups from database
+      const dbGroups = await getAllGroups()
+      setGroups(dbGroups.map(convertFromDB))
+      
+      return groupId
+    } catch (e) {
+      console.error('Error creating group', e)
+      throw e
     }
-    
-    setGroups(prev => [...prev, newGroup])
-    return groupId
   }
 
   const getGroup = (id: string): Group | undefined => {
     return groups.find(g => g.id === id)
   }
 
-  const joinGroup = (groupId: string, userName: string): boolean => {
-    const group = groups.find(g => g.id === groupId)
-    if (!group) return false
-    
-    // Check if user already in group
-    const alreadyMember = group.members.some(m => m.name === userName)
-    if (alreadyMember) return true
-    
-    const memberId = crypto.randomUUID()
-    const updatedGroups = groups.map(g => {
-      if (g.id === groupId) {
-        return {
-          ...g,
-          members: [
-            ...g.members,
-            {
-              id: memberId,
-              name: userName,
-              hours: 0,
-              tasks: 0,
-              role: 'member' as Role,
-            }
-          ]
-        }
-      }
-      return g
-    })
-    
-    setGroups(updatedGroups)
-    return true
+  const joinGroup = async (groupId: string, userName: string): Promise<boolean> => {
+    try {
+      const group = groups.find(g => g.id === groupId)
+      if (!group) return false
+      
+      // Check if user already in group
+      const alreadyMember = group.members.some(m => m.name === userName)
+      if (alreadyMember) return true
+      
+      const memberId = crypto.randomUUID()
+      
+      await dbAddMember({
+        id: memberId,
+        groupId,
+        name: userName,
+        email: `${userName.toLowerCase().replace(' ', '.')}@example.com`,
+        role: 'member',
+        joinedAt: new Date().toISOString(),
+      })
+      
+      await refreshGroups()
+      return true
+    } catch (e) {
+      console.error('Error joining group', e)
+      return false
+    }
   }
 
-  const addMember = (groupId: string, memberName: string, role: Role = 'member') => {
-    const memberId = crypto.randomUUID()
-    const updatedGroups = groups.map(g => {
-      if (g.id === groupId) {
-        // Check if member with same name already exists
-        const existingMember = g.members.find(m => m.name === memberName)
-        if (existingMember) {
-          console.warn(`Member "${memberName}" already exists in group`)
-          return g // Don't add duplicate
-        }
-        
-        return {
-          ...g,
-          members: [
-            ...g.members,
-            {
-              id: memberId,
-              name: memberName,
-              hours: 0,
-              tasks: 0,
-              role,
-            }
-          ]
-        }
+  const addMember = async (groupId: string, memberName: string, role: Role = 'member'): Promise<void> => {
+    try {
+      const group = groups.find(g => g.id === groupId)
+      if (!group) return
+      
+      // Check if member with same name already exists
+      const existingMember = group.members.find(m => m.name === memberName)
+      if (existingMember) {
+        console.warn(`Member "${memberName}" already exists in group`)
+        return
       }
-      return g
-    })
-    
-    setGroups(updatedGroups)
+      
+      const memberId = crypto.randomUUID()
+      await dbAddMember({
+        id: memberId,
+        groupId,
+        name: memberName,
+        email: `${memberName.toLowerCase().replace(' ', '.')}@example.com`,
+        role,
+        joinedAt: new Date().toISOString(),
+      })
+      
+      await refreshGroups()
+    } catch (e) {
+      console.error('Error adding member', e)
+    }
   }
 
-  const updateMemberContribution = (
+  const updateMemberContribution = async (
     groupId: string,
     memberId: string,
     hours: number,
     tasks: number
-  ) => {
-    const updatedGroups = groups.map(g => {
-      if (g.id === groupId) {
-        return {
-          ...g,
-          members: g.members.map(m => {
-            if (m.id === memberId) {
-              return {
-                ...m,
-                hours: m.hours + hours,
-                tasks: m.tasks + tasks,
-              }
-            }
-            return m
-          })
-        }
-      }
-      return g
-    })
-    
-    setGroups(updatedGroups)
+  ): Promise<void> => {
+    // Contributions are now calculated automatically from tasks
+    // This function is kept for backward compatibility but does nothing
+    console.log('updateMemberContribution called but contributions are calculated from tasks')
   }
 
-  const updateGroupSettings = (
+  const updateGroupSettings = async (
     groupId: string,
     name: string,
     description: string,
     totalTasksNeeded: number
-  ) => {
-    const updatedGroups = groups.map(g => {
-      if (g.id === groupId) {
-        return {
-          ...g,
-          name,
-          description,
-          totalTasksNeeded,
-        }
-      }
-      return g
-    })
-    
-    setGroups(updatedGroups)
+  ): Promise<void> => {
+    try {
+      await dbUpdateGroup(groupId, { name, description })
+      // Note: totalTasksNeeded is stored in memory only for now
+      await refreshGroups()
+    } catch (e) {
+      console.error('Error updating group settings', e)
+    }
   }
 
   // Task management methods
-  const createTask = (groupId: string, title: string, description: string, hours: number): string => {
-    const taskId = crypto.randomUUID()
-    const updatedGroups = groups.map(g => {
-      if (g.id === groupId) {
-        return {
-          ...g,
-          tasks: [
-            ...g.tasks,
-            {
-              id: taskId,
-              title,
-              description,
-              assignedTo: null,
-              hours,
-              status: 'todo' as TaskStatus,
-            }
-          ]
-        }
-      }
-      return g
-    })
-    setGroups(updatedGroups)
-    return taskId
+  const createTask = async (groupId: string, title: string, description: string, hours: number): Promise<string> => {
+    try {
+      const taskId = crypto.randomUUID()
+      await dbAddTask({
+        id: taskId,
+        groupId,
+        title,
+        description,
+        assignedTo: null,
+        status: 'todo',
+        estimatedHours: hours,
+        actualHours: 0,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      })
+      await refreshGroups()
+      return taskId
+    } catch (e) {
+      console.error('Error creating task', e)
+      throw e
+    }
   }
 
-  const assignTask = (groupId: string, taskId: string, memberId: string | null) => {
-    const updatedGroups = groups.map(g => {
-      if (g.id === groupId) {
-        return {
-          ...g,
-          tasks: g.tasks.map(t => 
-            t.id === taskId ? { ...t, assignedTo: memberId } : t
-          )
-        }
-      }
-      return g
-    })
-    setGroups(updatedGroups)
+  const assignTask = async (groupId: string, taskId: string, memberId: string | null): Promise<void> => {
+    try {
+      await dbUpdateTask(taskId, { assignedTo: memberId })
+      await refreshGroups()
+    } catch (e) {
+      console.error('Error assigning task', e)
+    }
   }
 
-  const updateTaskStatus = (groupId: string, taskId: string, status: TaskStatus) => {
-    const updatedGroups = groups.map(g => {
-      if (g.id === groupId) {
-        return {
-          ...g,
-          tasks: g.tasks.map(t => 
-            t.id === taskId ? { ...t, status } : t
-          )
-        }
-      }
-      return g
-    })
-    setGroups(updatedGroups)
+  const updateTaskStatus = async (groupId: string, taskId: string, status: TaskStatus): Promise<void> => {
+    try {
+      await dbUpdateTask(taskId, { status })
+      await refreshGroups()
+    } catch (e) {
+      console.error('Error updating task status', e)
+    }
   }
 
   const getTask = (groupId: string, taskId: string): Task | undefined => {
@@ -319,110 +362,95 @@ export function GroupProvider({ children }: { children: ReactNode }) {
     return group?.tasks.find(t => t.id === taskId)
   }
 
-  const deleteTask = (groupId: string, taskId: string) => {
-    const updatedGroups = groups.map(g => {
-      if (g.id === groupId) {
-        return {
-          ...g,
-          tasks: g.tasks.filter(t => t.id !== taskId)
-        }
-      }
-      return g
-    })
-    setGroups(updatedGroups)
-  }
-
-  const autoAssignTasks = (groupId: string): number => {
-    const group = getGroup(groupId)
-    if (!group) return 0
-
-    const unassignedTasks = group.tasks.filter(t => t.assignedTo === null)
-    if (unassignedTasks.length === 0) return 0
-
-    // Get members who are not sherpas (sherpas handle coordination, not tasks)
-    const eligibleMembers = group.members.filter(m => m.role !== 'sherpa')
-    if (eligibleMembers.length === 0) return 0
-
-    // Calculate current workload for each member (sum of assigned task hours)
-    const memberWorkload = eligibleMembers.map(member => {
-      const assignedHours = group.tasks
-        .filter(t => t.assignedTo === member.id)
-        .reduce((sum, t) => sum + t.hours, 0)
-      return {
-        memberId: member.id,
-        currentHours: assignedHours
-      }
-    })
-
-    // Sort by current workload ascending (assign to least busy first)
-    memberWorkload.sort((a, b) => a.currentHours - b.currentHours)
-
-    // Assign tasks round-robin to balance workload
-    let assignedCount = 0
-    setGroups(groups.map(g => {
-      if (g.id === groupId) {
-        const updatedTasks = g.tasks.map(task => {
-          if (task.assignedTo === null) {
-            // Assign to member with least current workload
-            const assignTo = memberWorkload[assignedCount % memberWorkload.length]
-            assignedCount++
-            
-            // Update workload tracker
-            assignTo.currentHours += task.hours
-            memberWorkload.sort((a, b) => a.currentHours - b.currentHours)
-            
-            return {
-              ...task,
-              assignedTo: assignTo.memberId
-            }
-          }
-          return task
-        })
-        
-        return {
-          ...g,
-          tasks: updatedTasks
-        }
-      }
-      return g
-    }))
-
-    return unassignedTasks.length
-  }
-
-  const loadCanvasMockData = () => {
-    // Clear localStorage to ensure fresh Canvas data
-    localStorage.removeItem('fairGroupworkGroups')
-    
-    const canvasGroup: Group = {
-      id: 'canvas-mock-1',
-      name: 'SaaS Platform MVP',
-      description: 'Mock project loaded from Canvas LMS demonstrating fairness issues',
-      totalTasksNeeded: 33,
-      projectLead: 'Alice',
-      tasks: [
-        { id: 'task-1', title: 'Wireframes', description: 'Design UI wireframes for all pages', assignedTo: 'member-alice', hours: 8, status: 'done' },
-        { id: 'task-2', title: 'API Design', description: 'REST API design and documentation', assignedTo: 'member-bob', hours: 4, status: 'done' },
-        { id: 'task-3', title: 'UI Components', description: 'Build reusable React components', assignedTo: 'member-alice', hours: 6, status: 'in-progress' },
-        { id: 'task-4', title: 'Testing', description: 'Unit and integration tests', assignedTo: 'member-charlie', hours: 3, status: 'todo' },
-        { id: 'task-5', title: 'User Stories', description: 'Write user stories and acceptance criteria', assignedTo: 'member-diana', hours: 5, status: 'done' },
-        { id: 'task-6', title: 'Deployment', description: 'Set up CI/CD and deploy to production', assignedTo: 'member-alice', hours: 7, status: 'todo' },
-      ],
-      members: [
-        { id: 'member-alice', name: 'Alice', hours: 21, tasks: 3, role: 'member' },
-        { id: 'member-bob', name: 'Bob', hours: 4, tasks: 1, role: 'member' },
-        { id: 'member-charlie', name: 'Charlie', hours: 3, tasks: 1, role: 'member' },
-        { id: 'member-diana', name: 'Diana', hours: 5, tasks: 1, role: 'sherpa' },
-      ]
+  const deleteTask = async (groupId: string, taskId: string): Promise<void> => {
+    try {
+      await dbDeleteTask(taskId)
+      await refreshGroups()
+    } catch (e) {
+      console.error('Error deleting task', e)
     }
-    
-    setGroups([canvasGroup])
-    setCurrentUserName('Alice')
   }
 
-  const loadDemoData = () => {
-    // Clear localStorage to ensure fresh demo data
-    localStorage.removeItem('fairGroupworkGroups')
+  const autoAssignTasks = async (groupId: string): Promise<number> => {
+    try {
+      const group = getGroup(groupId)
+      if (!group) return 0
+
+      const unassignedTasks = group.tasks.filter(t => t.assignedTo === null)
+      if (unassignedTasks.length === 0) return 0
+
+      // Get members who are not sherpas (sherpas handle coordination, not tasks)
+      const eligibleMembers = group.members.filter(m => m.role !== 'sherpa')
+      if (eligibleMembers.length === 0) return 0
+
+      // Calculate current workload for each member (sum of assigned task hours)
+      const memberWorkload = eligibleMembers.map(member => {
+        const assignedHours = group.tasks
+          .filter(t => t.assignedTo === member.id)
+          .reduce((sum, t) => sum + t.hours, 0)
+        return {
+          memberId: member.id,
+          currentHours: assignedHours
+        }
+      })
+
+      // Sort by current workload ascending (assign to least busy first)
+      memberWorkload.sort((a, b) => a.currentHours - b.currentHours)
+
+      // Assign tasks round-robin to balance workload
+      for (const task of unassignedTasks) {
+        // Assign to member with least current workload
+        const assignTo = memberWorkload[0]
+        await dbUpdateTask(task.id, { assignedTo: assignTo.memberId })
+        
+        // Update workload tracker
+        assignTo.currentHours += task.hours
+        memberWorkload.sort((a, b) => a.currentHours - b.currentHours)
+      }
+
+      await refreshGroups()
+      return unassignedTasks.length
+    } catch (e) {
+      console.error('Error auto-assigning tasks', e)
+      return 0
+    }
+  }
+
+  const loadCanvasMockData = async (): Promise<void> => {
+    try {
+      console.log('Loading Canvas mock data...')
+      
+      const canvasGroup: DBGroup = {
+        id: 'canvas-mock-1',
+        name: 'SaaS Platform MVP',
+        description: 'Mock project loaded from Canvas LMS demonstrating fairness issues',
+        createdAt: new Date().toISOString(),
+        members: [
+          { id: 'member-alice', groupId: 'canvas-mock-1', name: 'Alice', email: 'alice@example.com', role: 'member', joinedAt: new Date().toISOString() },
+          { id: 'member-bob', groupId: 'canvas-mock-1', name: 'Bob', email: 'bob@example.com', role: 'member', joinedAt: new Date().toISOString() },
+          { id: 'member-charlie', groupId: 'canvas-mock-1', name: 'Charlie', email: 'charlie@example.com', role: 'member', joinedAt: new Date().toISOString() },
+          { id: 'member-diana', groupId: 'canvas-mock-1', name: 'Diana', email: 'diana@example.com', role: 'sherpa', joinedAt: new Date().toISOString() },
+        ],
+        tasks: [
+          { id: 'task-1', groupId: 'canvas-mock-1', title: 'Wireframes', description: 'Design UI wireframes for all pages', assignedTo: 'member-alice', estimatedHours: 8, actualHours: 8, status: 'done', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+          { id: 'task-2', groupId: 'canvas-mock-1', title: 'API Design', description: 'REST API design and documentation', assignedTo: 'member-bob', estimatedHours: 4, actualHours: 4, status: 'done', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+          { id: 'task-3', groupId: 'canvas-mock-1', title: 'UI Components', description: 'Build reusable React components', assignedTo: 'member-alice', estimatedHours: 6, actualHours: 3, status: 'in-progress', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+          { id: 'task-4', groupId: 'canvas-mock-1', title: 'Testing', description: 'Unit and integration tests', assignedTo: 'member-charlie', estimatedHours: 3, actualHours: 0, status: 'todo', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+          { id: 'task-5', groupId: 'canvas-mock-1', title: 'User Stories', description: 'Write user stories and acceptance criteria', assignedTo: 'member-diana', estimatedHours: 5, actualHours: 5, status: 'done', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+          { id: 'task-6', groupId: 'canvas-mock-1', title: 'Deployment', description: 'Set up CI/CD and deploy to production', assignedTo: 'member-alice', estimatedHours: 7, actualHours: 0, status: 'todo', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+        ],
+      }
+      
+      await bulkInsertGroups([canvasGroup])
+      await refreshGroups()
+      setCurrentUserName('Alice')
+      console.log('Canvas mock data loaded')
+    } catch (e) {
+      console.error('Error loading Canvas mock data', e)
+    }
+  }
+
+  const loadDemoData = async (): Promise<void> => {
     console.log('Loading demo data...')
     
     const demoGroups: Group[] = [
@@ -498,12 +526,66 @@ export function GroupProvider({ children }: { children: ReactNode }) {
           { id: 'demo-member-3-2', name: 'Charlie Davis', hours: 19, tasks: 11, role: 'member' },
           { id: 'demo-member-3-3', name: 'Bob Smith', hours: 18, tasks: 10, role: 'member' },
         ]
+      },
+      {
+        id: 'demo-group-4',
+        name: 'Disainmõtlemine',
+        description: 'University group work fairness tracking system using design thinking methodology',
+        totalTasksNeeded: 45,
+        projectLead: 'Andres',
+        tasks: [
+          // Technical tasks for Andres
+          { id: 'task-4-1', title: 'RxDB Integration', description: 'Replace localStorage with RxDB database engine', assignedTo: 'demo-member-4-1', hours: 8, status: 'done' },
+          { id: 'task-4-2', title: 'Database Schema Design', description: 'Design schema for groups, members, and tasks', assignedTo: 'demo-member-4-1', hours: 6, status: 'done' },
+          { id: 'task-4-3', title: 'Context API Migration', description: 'Update GroupContext to use async database operations', assignedTo: 'demo-member-4-1', hours: 10, status: 'in-progress' },
+          { id: 'task-4-4', title: 'Performance Optimization', description: 'Optimize database queries and add indexes', assignedTo: 'demo-member-4-1', hours: 5, status: 'todo' },
+          { id: 'task-4-5', title: 'Testing Infrastructure', description: 'Set up unit and E2E tests', assignedTo: 'demo-member-4-1', hours: 7, status: 'todo' },
+          
+          // Non-technical tasks for team members
+          { id: 'task-4-6', title: 'User Research Interviews', description: 'Conduct interviews with 5 students about group work challenges', assignedTo: 'demo-member-4-2', hours: 8, status: 'done' },
+          { id: 'task-4-7', title: 'Persona Development', description: 'Create user personas based on research findings', assignedTo: 'demo-member-4-2', hours: 5, status: 'done' },
+          { id: 'task-4-8', title: 'Journey Mapping', description: 'Map student journey through group project lifecycle', assignedTo: 'demo-member-4-2', hours: 6, status: 'in-progress' },
+          
+          { id: 'task-4-9', title: 'Design System Creation', description: 'Develop color palette and typography guidelines', assignedTo: 'demo-member-4-3', hours: 7, status: 'done' },
+          { id: 'task-4-10', title: 'UI Wireframes', description: 'Create low-fidelity wireframes for key screens', assignedTo: 'demo-member-4-3', hours: 8, status: 'done' },
+          { id: 'task-4-11', title: 'High-Fidelity Mockups', description: 'Design final UI mockups in Figma', assignedTo: 'demo-member-4-3', hours: 10, status: 'in-progress' },
+          
+          { id: 'task-4-12', title: 'Competitive Analysis', description: 'Research existing group work management tools', assignedTo: 'demo-member-4-4', hours: 6, status: 'done' },
+          { id: 'task-4-13', title: 'Feature Prioritization', description: 'Create feature priority matrix with stakeholders', assignedTo: 'demo-member-4-4', hours: 4, status: 'done' },
+          { id: 'task-4-14', title: 'Usability Testing Plan', description: 'Design usability test protocol and scenarios', assignedTo: 'demo-member-4-4', hours: 5, status: 'in-progress' },
+          
+          { id: 'task-4-15', title: 'Project Documentation', description: 'Document design decisions and methodology', assignedTo: 'demo-member-4-5', hours: 7, status: 'done' },
+          { id: 'task-4-16', title: 'Stakeholder Presentations', description: 'Prepare and deliver progress presentations', assignedTo: 'demo-member-4-5', hours: 6, status: 'done' },
+          { id: 'task-4-17', title: 'Final Report Writing', description: 'Write comprehensive project report', assignedTo: 'demo-member-4-5', hours: 8, status: 'in-progress' },
+          
+          // Collaborative tasks
+          { id: 'task-4-18', title: 'Ideation Workshop', description: 'Facilitate brainstorming session for features', assignedTo: null, hours: 4, status: 'todo' },
+          { id: 'task-4-19', title: 'Usability Testing', description: 'Conduct usability tests with real users', assignedTo: null, hours: 6, status: 'todo' },
+          { id: 'task-4-20', title: 'Design Critique Session', description: 'Review designs and provide feedback', assignedTo: null, hours: 3, status: 'todo' },
+        ],
+        members: [
+          { id: 'demo-member-4-1', name: 'Andres', hours: 29, tasks: 15, role: 'member' },
+          { id: 'demo-member-4-2', name: 'Arto', hours: 19, tasks: 10, role: 'member' },
+          { id: 'demo-member-4-3', name: 'Eva', hours: 25, tasks: 13, role: 'member' },
+          { id: 'demo-member-4-4', name: 'Getter', hours: 15, tasks: 8, role: 'sherpa' },
+          { id: 'demo-member-4-5', name: 'Jarmo', hours: 21, tasks: 11, role: 'member' },
+        ]
       }
     ]
     
-    console.log('Demo groups with tasks:', demoGroups.map(g => ({ name: g.name, taskCount: g.tasks.length })))
-    setGroups(demoGroups)
-    setCurrentUserName('Alice Johnson')
+    try {
+      console.log('Demo groups with tasks:', demoGroups.map(g => ({ name: g.name, taskCount: g.tasks.length })))
+      
+      // Convert to DB format and insert
+      const dbGroups = demoGroups.map(convertToDB)
+      await bulkInsertGroups(dbGroups)
+      await refreshGroups()
+      
+      setCurrentUserName('Alice Johnson')
+      console.log('Demo data loaded successfully')
+    } catch (e) {
+      console.error('Error loading demo data', e)
+    }
   }
 
   return (

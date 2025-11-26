@@ -22,7 +22,7 @@ export default function NewTaskPage({ params }: { params: { id: string } }) {
     }
   }, [currentUserName, router])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setErrors({})
     
@@ -47,7 +47,7 @@ export default function NewTaskPage({ params }: { params: { id: string } }) {
       return
     }
     
-    createTask(params.id, titleValidation.sanitized, descValidation.sanitized, hoursValidation.value)
+    await createTask(params.id, titleValidation.sanitized, descValidation.sanitized, hoursValidation.value)
     router.push(`/group/${params.id}`)
   }
 
