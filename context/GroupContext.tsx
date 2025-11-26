@@ -36,7 +36,7 @@ export type Group = {
 type GroupContextType = {
   groups: Group[]
   currentUserName: string | null
-  setCurrentUserName: (name: string) => void
+  setCurrentUserName: (name: string | null) => void
   createGroup: (name: string, description?: string) => string
   getGroup: (id: string) => Group | undefined
   joinGroup: (groupId: string, userName: string) => boolean
@@ -107,9 +107,13 @@ export function GroupProvider({ children }: { children: ReactNode }) {
     }
   }, [groups, isClient])
 
-  const setCurrentUserName = (name: string) => {
+  const setCurrentUserName = (name: string | null) => {
     setCurrentUserNameState(name)
-    localStorage.setItem('currentUserName', name)
+    if (name) {
+      localStorage.setItem('currentUserName', name)
+    } else {
+      localStorage.removeItem('currentUserName')
+    }
   }
 
   const createGroup = (name: string, description?: string): string => {
@@ -419,6 +423,7 @@ export function GroupProvider({ children }: { children: ReactNode }) {
   const loadDemoData = () => {
     // Clear localStorage to ensure fresh demo data
     localStorage.removeItem('fairGroupworkGroups')
+    console.log('Loading demo data...')
     
     const demoGroups: Group[] = [
       {
@@ -496,6 +501,7 @@ export function GroupProvider({ children }: { children: ReactNode }) {
       }
     ]
     
+    console.log('Demo groups with tasks:', demoGroups.map(g => ({ name: g.name, taskCount: g.tasks.length })))
     setGroups(demoGroups)
     setCurrentUserName('Alice Johnson')
   }
