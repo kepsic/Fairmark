@@ -74,8 +74,8 @@ export default function TeacherProjectDetailPage({ params }: { params: { id: str
         {/* Fairness Alert */}
         {fairnessStatus !== 'balanced' && (
           <div className={`bg-white border-2 shadow-sm rounded-lg p-4 mb-4 ${
-            fairnessStatus === 'unbalanced' 
-              ? 'border-red-600' 
+            fairnessStatus === 'unbalanced'
+              ? 'border-red-600'
               : 'border-yellow-500'
           }`}>
             <div className="flex items-start gap-3">
@@ -84,7 +84,7 @@ export default function TeacherProjectDetailPage({ params }: { params: { id: str
                   {fairnessStatus === 'unbalanced' ? 'Fairness Warning' : 'Fairness Advisory'}
                 </h3>
                 <p className="text-sm mb-3 text-[#333333]">
-                  {fairnessStatus === 'unbalanced' 
+                  {fairnessStatus === 'unbalanced'
                     ? 'This project has a significantly unbalanced workload distribution.'
                     : 'This project shows signs of workload imbalance.'
                   }
@@ -136,7 +136,7 @@ export default function TeacherProjectDetailPage({ params }: { params: { id: str
           <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-4 mb-4">
             <p className="text-sm text-gray-600 mb-1">Completion</p>
             <p className="text-2xl font-bold">
-              {group.tasks.length > 0 
+              {group.tasks.length > 0
                 ? Math.round((group.tasks.filter(t => t.status === 'done').length / group.tasks.length) * 100)
                 : 0}%
             </p>
@@ -181,7 +181,7 @@ export default function TeacherProjectDetailPage({ params }: { params: { id: str
               .map(member => {
                 let recommendation = ''
                 let colorClass = ''
-                
+
                 if (member.percentage > 40) {
                   recommendation = 'Consider grade bonus for exceptional contribution'
                   colorClass = 'text-green-700'

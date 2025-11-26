@@ -25,12 +25,12 @@ export default function NewTaskPage({ params }: { params: { id: string } }) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setErrors({})
-    
+
     const titleValidation = validation.groupName(title) // Reuse for task title
     const descValidation = validation.description(description)
     const hoursNum = parseFloat(hours)
     const hoursValidation = validation.hours(hoursNum)
-    
+
     const newErrors: { title?: string; description?: string; hours?: string } = {}
     if (!titleValidation.isValid) {
       newErrors.title = titleValidation.error
@@ -41,12 +41,12 @@ export default function NewTaskPage({ params }: { params: { id: string } }) {
     if (!hoursValidation.isValid) {
       newErrors.hours = hoursValidation.error
     }
-    
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
       return
     }
-    
+
     await createTask(params.id, titleValidation.sanitized, descValidation.sanitized, hoursValidation.value)
     router.push(`/group/${params.id}`)
   }

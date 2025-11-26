@@ -22,10 +22,10 @@ export default function NewGroupPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setErrors({})
-    
+
     const nameValidation = validation.groupName(groupName)
     const descValidation = validation.description(description)
-    
+
     const newErrors: { name?: string; description?: string } = {}
     if (!nameValidation.isValid) {
       newErrors.name = nameValidation.error
@@ -33,12 +33,12 @@ export default function NewGroupPage() {
     if (!descValidation.isValid) {
       newErrors.description = descValidation.error
     }
-    
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
       return
     }
-    
+
     const groupId = await createGroup(
       nameValidation.sanitized,
       descValidation.sanitized || undefined
@@ -61,7 +61,7 @@ export default function NewGroupPage() {
 
         <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-6 mb-4">
           <h1 className="text-2xl font-bold mb-6 text-[#003A79]">Create New Project</h1>
-          
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="groupName" className="block text-sm font-medium mb-2">

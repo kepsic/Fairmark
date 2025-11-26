@@ -1,6 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { initializeFirebase } from '@/lib/firebase/config'
 import {
   getAllGroups,
   createGroup as dbCreateGroup,
@@ -12,8 +13,8 @@ import {
   updateTask as dbUpdateTask,
   deleteTask as dbDeleteTask,
   bulkInsertGroups,
-} from '@/lib/rxdb/operations'
-import type { Group as DBGroup, Member as DBMember, Task as DBTask } from '@/lib/rxdb/schema'
+} from '@/lib/firebase/operations'
+import type { GroupWithData as DBGroup, MemberDoc as DBMember, TaskDoc as DBTask } from '@/lib/firebase/types'
 
 export type Role = 'member' | 'sherpa'
 
@@ -91,7 +92,7 @@ function convertFromDB(dbGroup: DBGroup): Group {
 // Helper to convert app Group to DB Group
 function convertToDB(group: Group): DBGroup {
   const now = new Date().toISOString()
-  
+
   return {
     id: group.id,
     name: group.name,
@@ -152,22 +153,25 @@ export function GroupProvider({ children }: { children: ReactNode }) {
   // Load data from RxDB on mount
   useEffect(() => {
     setIsClient(true)
-    
+
     async function loadData() {
       try {
+        // Initialize Firebase
+        initializeFirebase()
+
         // Load user name from localStorage (lightweight data)
         const storedUserName = localStorage.getItem('currentUserName')
         if (storedUserName) {
           setCurrentUserNameState(storedUserName)
         }
 
-        // Load groups from RxDB
+        // Load groups from Firebase
         const dbGroups = await getAllGroups()
         const convertedGroups = dbGroups.map(convertFromDB)
         setGroups(convertedGroups)
-        console.log(`Loaded ${convertedGroups.length} groups from RxDB`)
+        console.log(`Loaded ${convertedGroups.length} groups from Firebase`)
       } catch (e) {
-        console.error('Error loading data from RxDB', e)
+        console.error('Error loading data from Firebase', e)
       } finally {
         setIsLoading(false)
       }
@@ -198,7 +202,7 @@ export function GroupProvider({ children }: { children: ReactNode }) {
   const createGroup = async (name: string, description?: string): Promise<string> => {
     const groupId = crypto.randomUUID()
     const memberId = crypto.randomUUID()
-    
+
     try {
       // Create group in database
       await dbCreateGroup({
@@ -221,7 +225,7 @@ export function GroupProvider({ children }: { children: ReactNode }) {
       // Refresh groups from database
       const dbGroups = await getAllGroups()
       setGroups(dbGroups.map(convertFromDB))
-      
+
       return groupId
     } catch (e) {
       console.error('Error creating group', e)
@@ -237,13 +241,13 @@ export function GroupProvider({ children }: { children: ReactNode }) {
     try {
       const group = groups.find(g => g.id === groupId)
       if (!group) return false
-      
+
       // Check if user already in group
       const alreadyMember = group.members.some(m => m.name === userName)
       if (alreadyMember) return true
-      
+
       const memberId = crypto.randomUUID()
-      
+
       await dbAddMember({
         id: memberId,
         groupId,
@@ -252,7 +256,7 @@ export function GroupProvider({ children }: { children: ReactNode }) {
         role: 'member',
         joinedAt: new Date().toISOString(),
       })
-      
+
       await refreshGroups()
       return true
     } catch (e) {
@@ -265,14 +269,14 @@ export function GroupProvider({ children }: { children: ReactNode }) {
     try {
       const group = groups.find(g => g.id === groupId)
       if (!group) return
-      
+
       // Check if member with same name already exists
       const existingMember = group.members.find(m => m.name === memberName)
       if (existingMember) {
         console.warn(`Member "${memberName}" already exists in group`)
         return
       }
-      
+
       const memberId = crypto.randomUUID()
       await dbAddMember({
         id: memberId,
@@ -282,7 +286,7 @@ export function GroupProvider({ children }: { children: ReactNode }) {
         role,
         joinedAt: new Date().toISOString(),
       })
-      
+
       await refreshGroups()
     } catch (e) {
       console.error('Error adding member', e)
@@ -402,7 +406,7 @@ export function GroupProvider({ children }: { children: ReactNode }) {
         // Assign to member with least current workload
         const assignTo = memberWorkload[0]
         await dbUpdateTask(task.id, { assignedTo: assignTo.memberId })
-        
+
         // Update workload tracker
         assignTo.currentHours += task.hours
         memberWorkload.sort((a, b) => a.currentHours - b.currentHours)
@@ -419,7 +423,7 @@ export function GroupProvider({ children }: { children: ReactNode }) {
   const loadCanvasMockData = async (): Promise<void> => {
     try {
       console.log('Loading Canvas mock data...')
-      
+
       const canvasGroup: DBGroup = {
         id: 'canvas-mock-1',
         name: 'SaaS Platform MVP',
@@ -440,7 +444,7 @@ export function GroupProvider({ children }: { children: ReactNode }) {
           { id: 'task-6', groupId: 'canvas-mock-1', title: 'Deployment', description: 'Set up CI/CD and deploy to production', assignedTo: 'member-alice', estimatedHours: 7, actualHours: 0, status: 'todo', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
         ],
       }
-      
+
       await bulkInsertGroups([canvasGroup])
       await refreshGroups()
       setCurrentUserName('Alice')
@@ -452,7 +456,16 @@ export function GroupProvider({ children }: { children: ReactNode }) {
 
   const loadDemoData = async (): Promise<void> => {
     console.log('Loading demo data...')
-    
+
+    // Initialize Firebase
+    try {
+      initializeFirebase()
+    } catch (e) {
+      console.error('Failed to initialize Firebase:', e)
+      alert('Failed to initialize Firebase. Please check console for details.')
+      return
+    }
+
     const demoGroups: Group[] = [
       {
         id: 'demo-group-1',
@@ -540,24 +553,24 @@ export function GroupProvider({ children }: { children: ReactNode }) {
           { id: 'task-4-3', title: 'Context API Migration', description: 'Update GroupContext to use async database operations', assignedTo: 'demo-member-4-1', hours: 10, status: 'in-progress' },
           { id: 'task-4-4', title: 'Performance Optimization', description: 'Optimize database queries and add indexes', assignedTo: 'demo-member-4-1', hours: 5, status: 'todo' },
           { id: 'task-4-5', title: 'Testing Infrastructure', description: 'Set up unit and E2E tests', assignedTo: 'demo-member-4-1', hours: 7, status: 'todo' },
-          
+
           // Non-technical tasks for team members
           { id: 'task-4-6', title: 'User Research Interviews', description: 'Conduct interviews with 5 students about group work challenges', assignedTo: 'demo-member-4-2', hours: 8, status: 'done' },
           { id: 'task-4-7', title: 'Persona Development', description: 'Create user personas based on research findings', assignedTo: 'demo-member-4-2', hours: 5, status: 'done' },
           { id: 'task-4-8', title: 'Journey Mapping', description: 'Map student journey through group project lifecycle', assignedTo: 'demo-member-4-2', hours: 6, status: 'in-progress' },
-          
+
           { id: 'task-4-9', title: 'Design System Creation', description: 'Develop color palette and typography guidelines', assignedTo: 'demo-member-4-3', hours: 7, status: 'done' },
           { id: 'task-4-10', title: 'UI Wireframes', description: 'Create low-fidelity wireframes for key screens', assignedTo: 'demo-member-4-3', hours: 8, status: 'done' },
           { id: 'task-4-11', title: 'High-Fidelity Mockups', description: 'Design final UI mockups in Figma', assignedTo: 'demo-member-4-3', hours: 10, status: 'in-progress' },
-          
+
           { id: 'task-4-12', title: 'Competitive Analysis', description: 'Research existing group work management tools', assignedTo: 'demo-member-4-4', hours: 6, status: 'done' },
           { id: 'task-4-13', title: 'Feature Prioritization', description: 'Create feature priority matrix with stakeholders', assignedTo: 'demo-member-4-4', hours: 4, status: 'done' },
           { id: 'task-4-14', title: 'Usability Testing Plan', description: 'Design usability test protocol and scenarios', assignedTo: 'demo-member-4-4', hours: 5, status: 'in-progress' },
-          
+
           { id: 'task-4-15', title: 'Project Documentation', description: 'Document design decisions and methodology', assignedTo: 'demo-member-4-5', hours: 7, status: 'done' },
           { id: 'task-4-16', title: 'Stakeholder Presentations', description: 'Prepare and deliver progress presentations', assignedTo: 'demo-member-4-5', hours: 6, status: 'done' },
           { id: 'task-4-17', title: 'Final Report Writing', description: 'Write comprehensive project report', assignedTo: 'demo-member-4-5', hours: 8, status: 'in-progress' },
-          
+
           // Collaborative tasks
           { id: 'task-4-18', title: 'Ideation Workshop', description: 'Facilitate brainstorming session for features', assignedTo: null, hours: 4, status: 'todo' },
           { id: 'task-4-19', title: 'Usability Testing', description: 'Conduct usability tests with real users', assignedTo: null, hours: 6, status: 'todo' },
@@ -572,19 +585,27 @@ export function GroupProvider({ children }: { children: ReactNode }) {
         ]
       }
     ]
-    
+
     try {
       console.log('Demo groups with tasks:', demoGroups.map(g => ({ name: g.name, taskCount: g.tasks.length })))
-      
+
       // Convert to DB format and insert
       const dbGroups = demoGroups.map(convertToDB)
+      console.log('Converted groups to DB format:', dbGroups.length)
+
       await bulkInsertGroups(dbGroups)
+      console.log('Bulk insert complete, refreshing groups...')
+
       await refreshGroups()
-      
+      console.log('Groups refreshed')
+
       setCurrentUserName('Alice Johnson')
       console.log('Demo data loaded successfully')
+      alert('Demo data loaded successfully! 4 projects with tasks added.')
     } catch (e) {
-      console.error('Error loading demo data', e)
+      console.error('Error loading demo data:', e)
+      const errorMessage = e instanceof Error ? e.message : 'Unknown error'
+      alert(`Failed to load demo data: ${errorMessage}\n\nPlease ensure:\n1. Firestore is enabled in Firebase Console\n2. You have internet connection\n3. Firebase credentials are correct`)
     }
   }
 

@@ -30,7 +30,7 @@ export default function SettingsPage({ params }: { params: { id: string } }) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     const tasksNum = parseInt(totalTasksNeeded) || 10
 
     if (name.trim() && tasksNum > 0) {

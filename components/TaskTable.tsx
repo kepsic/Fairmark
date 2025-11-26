@@ -45,14 +45,14 @@ function TaskTable({ tasks, groupId, members }: TaskTableProps) {
         </thead>
         <tbody>
           {tasks.map((task) => {
-            const assignedMember = task.assignedTo 
+            const assignedMember = task.assignedTo
               ? members.find(m => m.id === task.assignedTo)
               : null
 
             return (
               <tr key={task.id} className="border-b border-gray-300 odd:bg-white even:bg-[#F5F5F5]">
                 <th scope="row" className="px-4 py-3">
-                  <Link 
+                  <Link
                     href={`/group/${groupId}/tasks/${task.id}`}
                     className="font-medium text-[#005BB5] hover:underline"
                   >

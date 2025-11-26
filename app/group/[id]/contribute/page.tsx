@@ -31,13 +31,13 @@ export default function ContributePage({ params }: { params: { id: string } }) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setErrors({})
-    
+
     const hoursNum = parseFloat(hours)
     const tasksNum = parseInt(tasks)
-    
+
     const hoursValidation = validation.hours(hoursNum)
     const tasksValidation = validation.tasks(tasksNum)
-    
+
     const newErrors: { hours?: string; tasks?: string } = {}
     if (!hoursValidation.isValid) {
       newErrors.hours = hoursValidation.error
@@ -45,7 +45,7 @@ export default function ContributePage({ params }: { params: { id: string } }) {
     if (!tasksValidation.isValid) {
       newErrors.tasks = tasksValidation.error
     }
-    
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
       return

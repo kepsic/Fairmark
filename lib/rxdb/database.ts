@@ -32,38 +32,82 @@ export async function getDatabase(): Promise<FairGroupworkDatabase> {
 async function createDatabase(): Promise<FairGroupworkDatabase> {
   console.log('Creating RxDB database...')
 
-  const db = await createRxDatabase<FairGroupworkDatabase>({
-    name: 'fairgroupwork',
-    storage: wrappedValidateAjvStorage({
-      storage: getRxStorageDexie(),
-    }),
-    multiInstance: true,
-    eventReduce: true,
-  })
+  try {
+    const db = await createRxDatabase<FairGroupworkDatabase>({
+      name: 'fairgroupwork',
+      storage: wrappedValidateAjvStorage({
+        storage: getRxStorageDexie(),
+      }),
+      multiInstance: true,
+      eventReduce: true,
+      ignoreDuplicate: true, // Ignore if database already exists
+    })
 
-  console.log('RxDB database created')
+    console.log('RxDB database created')
 
-  // Add collections
-  await db.addCollections({
-    groups: {
-      schema: groupSchema,
-    },
-    members: {
-      schema: memberSchema,
-    },
-    tasks: {
-      schema: taskSchema,
-    },
-  })
+    return await setupCollections(db)
+  } catch (error: any) {
+    // If there's a schema error, remove old database and recreate
+    if (error?.code === 'SC34' || error?.message?.includes('schema')) {
+      console.warn('Schema error detected, removing old database and recreating...')
+      try {
+        await removeDatabase()
+        // Recursively call to create fresh database
+        return await createDatabase()
+      } catch (e) {
+        console.error('Failed to recreate database:', e)
+        throw e
+      }
+    }
+    throw error
+  }
+}
 
-  console.log('Collections added')
+async function setupCollections(db: FairGroupworkDatabase): Promise<FairGroupworkDatabase> {
+  try {
+    // Add collections with migration strategies
+    await db.addCollections({
+      groups: {
+        schema: groupSchema,
+        migrationStrategies: {
+          // Migrate from version 0 to 1 (just returns the document unchanged, as we only added maxLength)
+          1: function(oldDoc: any) {
+            return oldDoc;
+          }
+        }
+      },
+      members: {
+        schema: memberSchema,
+        migrationStrategies: {
+          1: function(oldDoc: any) {
+            return oldDoc;
+          }
+        }
+      },
+      tasks: {
+        schema: taskSchema,
+        migrationStrategies: {
+          1: function(oldDoc: any) {
+            return oldDoc;
+          }
+        }
+      },
+    })
 
-  return db
+    console.log('Collections added')
+
+    return db
+  } catch (error: any) {
+    console.error('Error adding collections:', error)
+    // If collections fail to add, remove database and let caller retry
+    await db.remove()
+    throw error
+  }
 }
 
 // Group schema
 const groupSchema = {
-  version: 0,
+  version: 1,
   primaryKey: 'id',
   type: 'object',
   properties: {
@@ -89,7 +133,7 @@ const groupSchema = {
 
 // Member schema
 const memberSchema = {
-  version: 0,
+  version: 1,
   primaryKey: 'id',
   type: 'object',
   properties: {
@@ -125,7 +169,7 @@ const memberSchema = {
 
 // Task schema
 const taskSchema = {
-  version: 0,
+  version: 1,
   primaryKey: 'id',
   type: 'object',
   properties: {
@@ -189,8 +233,29 @@ const taskSchema = {
  */
 export async function removeDatabase() {
   if (dbPromise) {
-    const db = await dbPromise
-    await db.remove()
+    try {
+      const db = await dbPromise
+      await db.remove()
+    } catch (e) {
+      console.warn('Error removing database:', e)
+    }
     dbPromise = null
+  }
+
+  // Also clear IndexedDB directly as fallback
+  if (typeof window !== 'undefined' && window.indexedDB) {
+    try {
+      await new Promise<void>((resolve, reject) => {
+        const request = window.indexedDB.deleteDatabase('fairgroupwork')
+        request.onsuccess = () => resolve()
+        request.onerror = () => reject(request.error)
+        request.onblocked = () => {
+          console.warn('Database deletion blocked')
+          resolve() // Don't fail, just continue
+        }
+      })
+    } catch (e) {
+      console.warn('Error deleting IndexedDB:', e)
+    }
   }
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useGroups } from '@/context/GroupContext'
@@ -11,6 +11,7 @@ import FairnessBadge from '@/components/FairnessBadge'
 import TaskTable from '@/components/TaskTable'
 
 export default function GroupDashboard({ params }: { params: { id: string } }) {
+  const [showCopied, setShowCopied] = useState(false)
   const router = useRouter()
   const { getGroup, currentUserName, autoAssignTasks } = useGroups()
   const group = getGroup(params.id)
@@ -60,12 +61,43 @@ export default function GroupDashboard({ params }: { params: { id: string } }) {
 
         {/* Greeting */}
         <div className="mb-6">
-          <h1 className="text-2xl font-bold mb-1 text-[#003A79]">
-            {group.name}
-          </h1>
-          {group.description && (
-            <p className="text-[#333333]">{group.description}</p>
-          )}
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1">
+              <h1 className="text-2xl font-bold mb-1 text-[#003A79]">
+                {group.name}
+              </h1>
+              {group.description && (
+                <p className="text-[#333333]">{group.description}</p>
+              )}
+            </div>
+            <button
+              onClick={(e) => {
+                e.preventDefault()
+                const url = `${window.location.origin}/group/${group.id}`
+                navigator.clipboard.writeText(url)
+                setShowCopied(true)
+                setTimeout(() => setShowCopied(false), 2000)
+              }}
+              className="relative flex items-center gap-2 px-3 py-2 text-sm text-[#003A79] hover:bg-gray-100 rounded-md transition-colors whitespace-nowrap"
+              title="Copy project link"
+            >
+              {showCopied ? (
+                <>
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  Link copied!
+                </>
+              ) : (
+                <>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                  </svg>
+                  Share
+                </>
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Progress Section */}
@@ -153,18 +185,23 @@ export default function GroupDashboard({ params }: { params: { id: string } }) {
           </Link>
         </div>
 
-        {/* Group ID for sharing */}
+        {/* Share Project Link */}
         <div className="mt-6 bg-white border border-gray-200 shadow-sm rounded-lg p-4 mb-4">
-          <p className="text-sm font-medium text-[#333333] mb-2">Share this Project ID:</p>
+          <p className="text-sm font-medium text-[#333333] mb-2">Share this project:</p>
           <div className="flex items-center gap-2">
             <code className="flex-1 bg-white px-3 py-2 rounded border text-xs break-all">
-              {group.id}
+              {typeof window !== 'undefined' ? `${window.location.origin}/group/${group.id}` : `/group/${group.id}`}
             </code>
             <button
-              onClick={() => navigator.clipboard.writeText(group.id)}
+              onClick={() => {
+                const url = `${window.location.origin}/group/${group.id}`
+                navigator.clipboard.writeText(url)
+                setShowCopied(true)
+                setTimeout(() => setShowCopied(false), 2000)
+              }}
               className="bg-[#005BB5] text-white px-3 py-2 rounded text-sm hover:bg-[#004a99] transition whitespace-nowrap"
             >
-              Copy
+              Copy Link
             </button>
           </div>
         </div>

@@ -11,19 +11,19 @@ export const validation = {
    */
   userName: (name: string): { isValid: boolean; error?: string; sanitized: string } => {
     const trimmed = name.trim()
-    
+
     if (!trimmed) {
       return { isValid: false, error: 'Name cannot be empty', sanitized: '' }
     }
-    
+
     if (trimmed.length > 50) {
       return { isValid: false, error: 'Name must be 50 characters or less', sanitized: trimmed.slice(0, 50) }
     }
-    
+
     if (trimmed.length < 2) {
       return { isValid: false, error: 'Name must be at least 2 characters', sanitized: trimmed }
     }
-    
+
     // Basic XSS prevention - escape HTML special characters
     const sanitized = trimmed
       .replace(/</g, '&lt;')
@@ -31,7 +31,7 @@ export const validation = {
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#x27;')
       .replace(/\//g, '&#x2F;')
-    
+
     return { isValid: true, sanitized }
   },
 
@@ -42,26 +42,26 @@ export const validation = {
    */
   groupName: (name: string): { isValid: boolean; error?: string; sanitized: string } => {
     const trimmed = name.trim()
-    
+
     if (!trimmed) {
       return { isValid: false, error: 'Group name cannot be empty', sanitized: '' }
     }
-    
+
     if (trimmed.length < 3) {
       return { isValid: false, error: 'Group name must be at least 3 characters', sanitized: trimmed }
     }
-    
+
     if (trimmed.length > 100) {
       return { isValid: false, error: 'Group name must be 100 characters or less', sanitized: trimmed.slice(0, 100) }
     }
-    
+
     const sanitized = trimmed
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#x27;')
       .replace(/\//g, '&#x2F;')
-    
+
     return { isValid: true, sanitized }
   },
 
@@ -71,18 +71,18 @@ export const validation = {
    */
   description: (desc: string): { isValid: boolean; error?: string; sanitized: string } => {
     const trimmed = desc.trim()
-    
+
     if (trimmed.length > 500) {
       return { isValid: false, error: 'Description must be 500 characters or less', sanitized: trimmed.slice(0, 500) }
     }
-    
+
     const sanitized = trimmed
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#x27;')
       .replace(/\//g, '&#x2F;')
-    
+
     return { isValid: true, sanitized }
   },
 
@@ -95,15 +95,15 @@ export const validation = {
     if (isNaN(hours)) {
       return { isValid: false, error: 'Hours must be a valid number', value: 0 }
     }
-    
+
     if (hours < 0) {
       return { isValid: false, error: 'Hours cannot be negative', value: 0 }
     }
-    
+
     if (hours > 1000) {
       return { isValid: false, error: 'Hours must be less than 1000', value: 1000 }
     }
-    
+
     return { isValid: true, value: hours }
   },
 
@@ -116,19 +116,19 @@ export const validation = {
     if (isNaN(tasks)) {
       return { isValid: false, error: 'Tasks must be a valid number', value: 0 }
     }
-    
+
     if (!Number.isInteger(tasks)) {
       return { isValid: false, error: 'Tasks must be a whole number', value: Math.floor(tasks) }
     }
-    
+
     if (tasks < 0) {
       return { isValid: false, error: 'Tasks cannot be negative', value: 0 }
     }
-    
+
     if (tasks > 10000) {
       return { isValid: false, error: 'Tasks must be less than 10000', value: 10000 }
     }
-    
+
     return { isValid: true, value: tasks }
   },
 
@@ -141,19 +141,19 @@ export const validation = {
     if (isNaN(total)) {
       return { isValid: false, error: 'Total tasks must be a valid number', value: 10 }
     }
-    
+
     if (!Number.isInteger(total)) {
       return { isValid: false, error: 'Total tasks must be a whole number', value: Math.floor(total) }
     }
-    
+
     if (total < 1) {
       return { isValid: false, error: 'Total tasks must be at least 1', value: 1 }
     }
-    
+
     if (total > 10000) {
       return { isValid: false, error: 'Total tasks must be less than 10000', value: 10000 }
     }
-    
+
     return { isValid: true, value: total }
   },
 
@@ -163,20 +163,20 @@ export const validation = {
   groupId: (id: string): { isValid: boolean; error?: string } => {
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
     const trimmed = id.trim()
-    
+
     if (!trimmed) {
       return { isValid: false, error: 'Group ID cannot be empty' }
     }
-    
+
     // Also allow demo group IDs
     if (trimmed.startsWith('demo-group-')) {
       return { isValid: true }
     }
-    
+
     if (!uuidRegex.test(trimmed)) {
       return { isValid: false, error: 'Invalid group ID format' }
     }
-    
+
     return { isValid: true }
   }
 }

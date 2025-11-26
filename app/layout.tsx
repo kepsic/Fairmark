@@ -5,14 +5,14 @@ import { GroupProvider } from '@/context/GroupContext'
 import ErrorBoundary from '@/components/ErrorBoundary'
 import Header from '@/components/Header'
 
-const montserrat = Montserrat({ 
-  subsets: ['latin'], 
+const montserrat = Montserrat({
+  subsets: ['latin'],
   weight: ['400', '600', '700'],
   variable: '--font-montserrat'
 })
 
-const openSans = Open_Sans({ 
-  subsets: ['latin'], 
+const openSans = Open_Sans({
+  subsets: ['latin'],
   weight: ['300', '400', '600'],
   variable: '--font-open-sans'
 })

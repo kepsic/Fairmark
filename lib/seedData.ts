@@ -3,7 +3,7 @@ import { Group } from '@/context/GroupContext'
 // Seed data for demo purposes
 export const seedDemoData = () => {
   const userNames = ['Alice Johnson', 'Bob Smith', 'Charlie Davis', 'Diana Martinez']
-  
+
   const projects = [
     {
       name: 'E-Commerce Platform',
@@ -27,17 +27,17 @@ export const seedDemoData = () => {
   // Create each project with random team members
   projects.forEach((project, index): void => {
     const groupId = `demo-group-${index + 1}`
-    
+
     // Randomly assign 2-4 users to each project
     const numMembers = 2 + Math.floor(Math.random() * 3) // 2 to 4 members
     const shuffledUsers = [...userNames].sort(() => Math.random() - 0.5)
     const selectedUsers = shuffledUsers.slice(0, numMembers)
-    
+
     // Generate random contributions for each member
     const members = selectedUsers.map((userName, memberIndex) => {
       // Create variety in contributions for demo purposes
       let hours, tasks
-      
+
       if (index === 0) {
         // E-Commerce: Unbalanced (one person doing most work)
         if (memberIndex === 0) {
@@ -61,7 +61,7 @@ export const seedDemoData = () => {
         hours = 15 + Math.floor(Math.random() * 10)
         tasks = 10 + Math.floor(Math.random() * 5)
       }
-      
+
       return {
         id: `demo-member-${groupId}-${memberIndex}`,
         name: userName,

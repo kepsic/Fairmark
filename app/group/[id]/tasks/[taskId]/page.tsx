@@ -54,7 +54,7 @@ export default function TaskDetailPage({ params }: { params: { id: string; taskI
     )
   }
 
-  const assignedMember = task.assignedTo 
+  const assignedMember = task.assignedTo
     ? group.members.find(m => m.id === task.assignedTo)
     : null
 

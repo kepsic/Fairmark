@@ -21,7 +21,7 @@ export default function JoinGroupPage() {
   const handleJoinById = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
-    
+
     if (groupId.trim()) {
       const success = await joinGroup(groupId.trim(), currentUserName!)
       if (success) {
@@ -55,7 +55,7 @@ export default function JoinGroupPage() {
         {/* Join by ID */}
         <div className="bg-white border border-gray-200 shadow-sm rounded-lg p-6 mb-4">
           <h2 className="text-lg font-semibold mb-4 text-[#003A79]">Join by Project ID</h2>
-          
+
           <form onSubmit={handleJoinById} className="space-y-4">
             <div>
               <label htmlFor="groupId" className="block text-sm font-medium mb-2">

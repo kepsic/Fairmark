@@ -13,13 +13,13 @@ export function calculateTaskBasedContribution(member: Member, tasks: Task[]): n
  * Calculate fairness distribution for task-based system
  */
 export function calculateTaskFairness(members: Member[], tasks: Task[]): {
-  membersWithStats: Array<Member & { 
+  membersWithStats: Array<Member & {
     taskHours: number
     manualHours: number
     manualTasks: number
     totalHours: number
     totalEffort: number
-    percentage: number 
+    percentage: number
   }>
   totalEffort: number
   fairnessStatus: 'balanced' | 'slightly-unbalanced' | 'unbalanced'

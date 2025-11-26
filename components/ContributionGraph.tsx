@@ -27,7 +27,7 @@ export default function ContributionGraph({ members, tasks }: ContributionGraphP
           .sort((a, b) => b.percentage - a.percentage)
           .map(member => {
             const barWidth = (member.percentage / maxPercentage) * 100
-            
+
             let barColor = 'bg-green-500'
             if (member.percentage > 50) {
               barColor = 'bg-red-500'

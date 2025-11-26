@@ -74,7 +74,7 @@ export default function TeacherProjectsPage() {
                   return assigned.reduce((sum, t) => sum + t.hours, 0)
                 })
                 const totalHours = taskHours.reduce((sum, h) => sum + h, 0)
-                const maxContribution = totalHours > 0 
+                const maxContribution = totalHours > 0
                   ? Math.max(...taskHours.map(h => (h / totalHours) * 100))
                   : 0
 
