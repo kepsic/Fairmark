@@ -387,6 +387,9 @@ export function GroupProvider({ children }: { children: ReactNode }) {
   }
 
   const loadCanvasMockData = () => {
+    // Clear localStorage to ensure fresh Canvas data
+    localStorage.removeItem('fairGroupworkGroups')
+    
     const canvasGroup: Group = {
       id: 'canvas-mock-1',
       name: 'SaaS Platform MVP',
@@ -414,6 +417,9 @@ export function GroupProvider({ children }: { children: ReactNode }) {
   }
 
   const loadDemoData = () => {
+    // Clear localStorage to ensure fresh demo data
+    localStorage.removeItem('fairGroupworkGroups')
+    
     const demoGroups: Group[] = [
       {
         id: 'demo-group-1',
