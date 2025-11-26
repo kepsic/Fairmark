@@ -43,10 +43,9 @@ test.describe('Critical Path Tests', () => {
     await page.click('text=Create New Group')
     await page.waitForURL('/groups/new')
     
-    // Fill form
-    const inputs = await page.locator('input').all()
-    await inputs[0].fill('Simple Test Group')
-    await page.locator('input[type="number"]').fill('10')
+    // Fill form (only name and optional description)
+    await page.locator('input#groupName').fill('Simple Test Group')
+    await page.locator('textarea#description').fill('A test group for e2e testing')
     await page.waitForTimeout(500)
     
     // Submit

@@ -18,6 +18,7 @@ const customJestConfig = {
   ],
   testPathIgnorePatterns: [
     '/node_modules/',
+    '/e2e/',
     '/.next/',
     '/.vscode/'
   ],
